@@ -1,0 +1,14 @@
+version: '3.3'
+
+services:
+  client:
+    restart: 'always'
+    image: 'nginx'
+    volumes:
+      - ./static:/usr/share/nginx/html
+    ports:
+      - "8000:80"
+    environment:
+      - NGINX_HOST=127.0.0.1
+      - NGINX_PORT=80
+
