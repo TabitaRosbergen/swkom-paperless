@@ -1,14 +1,17 @@
-version: '3.3'
-
 services:
-  client:
-    restart: 'always'
-    image: 'nginx'
+  spring-boot-app:
+    image: leichentango:latest
+    container_name: leichentango
+    ports:
+      - "8080:8080"  # Map Spring Boot app port to host
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"  # Map Nginx port to host
     volumes:
       - ./static:/usr/share/nginx/html
-    ports:
-      - "8000:80"
-    environment:
-      - NGINX_HOST=127.0.0.1
-      - NGINX_PORT=80
+    depends_on:
+      - spring-boot-app  # Ensure Spring Boot app container is started before Nginx
 
