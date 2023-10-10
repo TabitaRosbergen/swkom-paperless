@@ -1,0 +1,17 @@
+services:
+  spring-boot-app:
+    image: leichentango:latest
+    container_name: leichentango
+    ports:
+      - "8080:8080"  # Map Spring Boot app port to host
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"  # Map Nginx port to host
+    volumes:
+      - ./static:/usr/share/nginx/html
+    depends_on:
+      - spring-boot-app  # Ensure Spring Boot app container is started before Nginx
+
