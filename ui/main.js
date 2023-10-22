@@ -33,6 +33,24 @@ globalThis.$localize = Object.assign(globalThis.$localize || {}, { locale: "en-U
 /* harmony import */ var _guards_dirty_saved_view_guard__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./guards/dirty-saved-view.guard */ 5084);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @angular/core */ 2560);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       const routes = [{
         path: '',
         redirectTo: 'dashboard',
@@ -23220,7 +23238,7 @@ globalThis.$localize = Object.assign(globalThis.$localize || {}, { locale: "en-U
       // The list of file replacements can be found in `angular.json`.
       const environment = {
         production: false,
-        apiBaseUrl: '/api/',
+        apiBaseUrl: 'http://localhost:8088/api/',
         apiVersion: '2',
         appTitle: 'Paperless-ngx',
         version: 'DEVELOPMENT',

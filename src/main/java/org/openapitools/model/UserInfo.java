@@ -21,7 +21,7 @@ import javax.annotation.Generated;
  * UserInfo
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-09-21T15:37:28.062293Z[Etc/UTC]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-10-10T06:36:40.060738Z[Etc/UTC]")
 public class UserInfo {
 
   private JsonNullable<String> username = JsonNullable.<String>undefined();
