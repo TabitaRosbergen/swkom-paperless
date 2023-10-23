@@ -1,0 +1,8 @@
+done:
+DocumentsTagEntity, DocTag
+Correspondent, DocumentCorrespondentEntity
+
+toDO:
+
+DocumentsDocumentEntity, Document
+DocumentTypeEntity, DocumentType
