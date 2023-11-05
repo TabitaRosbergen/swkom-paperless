@@ -1,11 +1,20 @@
 package org.openapitools.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
 
 @Entity
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DocumentsDocumentEntity {
 
     @Id
@@ -235,11 +244,11 @@ public class DocumentsDocumentEntity {
         this.documentDocumentsNoteEntities = documentDocumentsNoteEntities;
     }
 
-    public Set<DocumentsDocumentTagsEntity> getDocumentDocumentsDocumentTagses() {
+    public Set<DocumentsDocumentTagsEntity> getDocumentDocumentsDocumentTags() {
         return documentDocumentsDocumentTagsEntities;
     }
 
-    public void setDocumentDocumentsDocumentTagses(
+    public void setDocumentDocumentsDocumentTags(
             final Set<DocumentsDocumentTagsEntity> documentDocumentsDocumentTagsEntities) {
         this.documentDocumentsDocumentTagsEntities = documentDocumentsDocumentTagsEntities;
     }

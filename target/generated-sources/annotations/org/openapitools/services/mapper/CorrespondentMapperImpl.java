@@ -1,34 +1,18 @@
 package org.openapitools.services.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
 import org.openapitools.entities.DocumentsCorrespondentEntity;
 import org.openapitools.model.Correspondent;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-10-23T17:18:23+0200",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.1 (SAP SE)"
+    date = "2023-11-05T17:48:46+0100",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (SAP SE)"
 )
 public class CorrespondentMapperImpl implements CorrespondentMapper {
 
     @Override
-    public List<Correspondent> toDto(List<DocumentsCorrespondentEntity> entity) {
-        if ( entity == null ) {
-            return null;
-        }
-
-        List<Correspondent> list = new ArrayList<Correspondent>( entity.size() );
-        for ( DocumentsCorrespondentEntity documentsCorrespondentEntity : entity ) {
-            list.add( toDto( documentsCorrespondentEntity ) );
-        }
-
-        return list;
-    }
-
-    @Override
-    public Correspondent toDto(DocumentsCorrespondentEntity entity) {
+    public Correspondent entityToDto(DocumentsCorrespondentEntity entity) {
         if ( entity == null ) {
             return null;
         }
@@ -49,7 +33,7 @@ public class CorrespondentMapperImpl implements CorrespondentMapper {
     }
 
     @Override
-    public DocumentsCorrespondentEntity toEntity(Correspondent dto) {
+    public DocumentsCorrespondentEntity dtoToEntity(Correspondent dto) {
         if ( dto == null ) {
             return null;
         }
