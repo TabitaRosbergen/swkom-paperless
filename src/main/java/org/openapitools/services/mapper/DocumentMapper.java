@@ -7,6 +7,7 @@ import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.Document;
 import org.openapitools.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 import java.time.OffsetDateTime;
@@ -19,6 +20,7 @@ import java.util.Set;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Service
 public abstract class DocumentMapper implements BaseMapper<DocumentsDocumentEntity, Document> {
     public static DocumentMapper INSTANCE = Mappers.getMapper(DocumentMapper.class);
 
@@ -80,26 +82,31 @@ public abstract class DocumentMapper implements BaseMapper<DocumentsDocumentEnti
 
     @Named("correspondentDto")
     DocumentsCorrespondentEntity mapCorrespondent(JsonNullable<Integer> value) {
+        if(value==null || !value.isPresent() || value.get()==null) return null;
         return correspondentRepository.findById(value.get()).orElse(null);
     }
 
     @Named("documentTypeDto")
     DocumentsDocumenttypeEntity mapDocumentType(JsonNullable<Integer> value) {
+        if(value==null || !value.isPresent() || value.get()==null) return null;
         return documentTypeRepository.findById(value.get()).orElse(null);
     }
 
     @Named("storagePathDto")
     DocumentsStoragepathEntity mapStoragePath(JsonNullable<Integer> value) {
+        if(value==null || !value.isPresent() || value.get()==null) return null;
         return storagePathRepository.findById(value.get()).orElse(null);
     }
 
     @Named("ownerDto")
     AuthUserEntity mapOwner(JsonNullable<Integer> value) {
+        if(value==null || !value.isPresent() || value.get()==null) return null;
         return userRepository.findById(value.get()).orElse(null);
     }
 
     @Named("tagsDto")
     Set<DocumentsDocumentTagsEntity> mapDocTag(JsonNullable<List<Integer>> value) {
+        if(value==null || !value.isPresent() || value.get()==null) return null;
         return new HashSet<DocumentsDocumentTagsEntity>(documentTagsRepository.findAllById(value.get()));
     }
 

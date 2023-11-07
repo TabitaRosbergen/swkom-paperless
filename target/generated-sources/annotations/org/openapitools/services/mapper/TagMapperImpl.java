@@ -6,8 +6,8 @@ import org.openapitools.model.DocTag;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-11-05T17:48:46+0100",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (SAP SE)"
+    date = "2023-11-07T21:12:05+0100",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.1 (Oracle Corporation)"
 )
 public class TagMapperImpl implements TagMapper {
 

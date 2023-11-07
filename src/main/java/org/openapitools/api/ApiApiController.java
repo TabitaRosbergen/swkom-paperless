@@ -1,68 +1,19 @@
 package org.openapitools.api;
 
-import org.openapitools.model.AckTasks200Response;
-import org.openapitools.model.AckTasksRequest;
-import org.openapitools.model.BulkEditRequest;
-import org.openapitools.model.CreateCorrespondentRequest;
-import org.openapitools.model.CreateDocumentType200Response;
-import org.openapitools.model.CreateGroupRequest;
-import org.openapitools.model.CreateSavedViewsRequest;
-import org.openapitools.model.CreateStoragePath200Response;
-import org.openapitools.model.CreateStoragePathRequest;
-import org.openapitools.model.CreateTag200Response;
-import org.openapitools.model.CreateTagRequest;
-import org.openapitools.model.CreateUISettings200Response;
-import org.openapitools.model.CreateUISettingsRequest;
-import org.openapitools.model.CreateUserRequest;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.openapitools.model.GetCorrespondents200Response;
-import org.openapitools.model.GetDocument200Response;
-import org.openapitools.model.GetDocumentMetadata200Response;
-import org.openapitools.model.GetDocumentSuggestions200Response;
-import org.openapitools.model.GetDocumentTypes200Response;
-import org.openapitools.model.GetDocuments200Response;
-import org.openapitools.model.GetGroups200Response;
-import org.openapitools.model.GetSavedViews200Response;
-import org.openapitools.model.GetStoragePaths200Response;
-import org.openapitools.model.GetTags200Response;
-import org.openapitools.model.GetTasks200ResponseInner;
-import org.openapitools.model.GetUISettings200Response;
-import org.openapitools.model.GetUsers200Response;
-import org.openapitools.model.GetUsers200ResponseResultsInner;
-import java.time.OffsetDateTime;
-import org.openapitools.model.SelectionData200Response;
-import org.openapitools.model.SelectionDataRequest;
-import org.openapitools.model.Statistics200Response;
-import org.openapitools.model.UpdateCorrespondent200Response;
-import org.openapitools.model.UpdateCorrespondentRequest;
-import org.openapitools.model.UpdateDocument200Response;
-import org.openapitools.model.UpdateDocumentRequest;
-import org.openapitools.model.UpdateDocumentType200Response;
-import org.openapitools.model.UpdateDocumentTypeRequest;
-import org.openapitools.model.UpdateGroup200Response;
-import org.openapitools.model.UpdateGroupRequest;
-import org.openapitools.model.UpdateStoragePath200Response;
-import org.openapitools.model.UpdateStoragePathRequest;
-import org.openapitools.model.UpdateTag200Response;
-import org.openapitools.model.UpdateTagRequest;
-import org.openapitools.model.UpdateUserRequest;
-import org.openapitools.model.UserInfo;
+import org.openapitools.jackson.nullable.JsonNullable;
+import org.openapitools.model.Document;
+import org.openapitools.services.requestservices.DocumentServiceImpl;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.*;
-import javax.validation.Valid;
-
+import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
@@ -72,10 +23,13 @@ import javax.annotation.Generated;
 @CrossOrigin(origins = "http://localhost:8080")
 public class ApiApiController implements ApiApi {
 
+    private final DocumentServiceImpl documentServiceImpl;
+
     private final NativeWebRequest request;
 
     @Autowired
-    public ApiApiController(NativeWebRequest request) {
+    public ApiApiController(DocumentServiceImpl documentServiceImpl, NativeWebRequest request) {
+        this.documentServiceImpl = documentServiceImpl;
         this.request = request;
     }
 
@@ -83,5 +37,30 @@ public class ApiApiController implements ApiApi {
     public Optional<NativeWebRequest> getRequest() {
         return Optional.ofNullable(request);
     }
+
+    @Override
+    public ResponseEntity<Void> uploadDocument(String title, OffsetDateTime created, Integer documentType, List<Integer> tags, Integer correspondent, List<MultipartFile> multipartFiles) {
+        try {
+
+            String name = multipartFiles.get(0).getOriginalFilename();
+            Document document = new Document();
+            document.setTitle(JsonNullable.of(title == null ? name : title));
+            System.out.println("!!!!!!!!!!!In upload: title: " +document.getTitle()); //TEST
+            document.setOriginalFileName(JsonNullable.of(name));
+            document.setCreated(created);
+            document.setDocumentType(JsonNullable.of(documentType));
+            document.setTags(JsonNullable.of(tags));
+            document.setCorrespondent(JsonNullable.of(correspondent));
+
+            documentServiceImpl.uploadDocument(document, multipartFiles);
+            return ResponseEntity.ok().build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+
+    }
+
 
 }
