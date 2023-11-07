@@ -8,6 +8,11 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.util.NoSuchElementException;
@@ -24,8 +29,11 @@ import javax.annotation.Generated;
 /**
  * Document
  */
-
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-09-21T15:37:28.062293Z[Etc/UTC]")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-10-10T06:36:40.060738Z[Etc/UTC]")
 public class Document {
 
   private Integer id;
