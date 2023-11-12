@@ -2,7 +2,7 @@ package org.openapitools.services.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import org.openapitools.entities.DocumentsTagEntity;
+import org.openapitools.persistence.entities.DocumentsTagEntity;
 import org.openapitools.model.DocTag;
 
 @Mapper
