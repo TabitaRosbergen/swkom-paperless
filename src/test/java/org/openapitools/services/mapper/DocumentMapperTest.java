@@ -2,7 +2,7 @@ package org.openapitools.services.mapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.entities.DocumentsDocumentEntity;
+import org.openapitools.persistence.entities.DocumentsDocumentEntity;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.Document;
 

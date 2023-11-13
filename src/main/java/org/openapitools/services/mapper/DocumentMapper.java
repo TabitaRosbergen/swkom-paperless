@@ -2,10 +2,10 @@ package org.openapitools.services.mapper;
 
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
-import org.openapitools.entities.*;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.Document;
-import org.openapitools.repositories.*;
+import org.openapitools.persistence.entities.*;
+import org.openapitools.persistence.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
