@@ -1,13 +1,13 @@
 package org.openapitools.services.mapper;
 
 import javax.annotation.Generated;
-import org.openapitools.entities.DocumentsDocumentEntity;
 import org.openapitools.model.Document;
+import org.openapitools.persistence.entities.DocumentsDocumentEntity;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-11-07T21:12:05+0100",
+    date = "2023-11-10T12:49:40+0100",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.1 (Oracle Corporation)"
 )
 @Component
