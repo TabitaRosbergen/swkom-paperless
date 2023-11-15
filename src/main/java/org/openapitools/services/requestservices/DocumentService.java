@@ -5,5 +5,5 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 public interface DocumentService {
-    void uploadDocument(Document document, List<MultipartFile> multipartFiles);
+    void uploadDocument(Document document, MultipartFile multipartFile);
 }
