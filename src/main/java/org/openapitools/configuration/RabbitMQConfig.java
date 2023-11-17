@@ -13,19 +13,19 @@ public class RabbitMQConfig {
 
     public static final String EXCHANGE = "";
 
-    public static final String ECHO_IN_QUEUE_NAME = "Echo_In";
-    public static final String ECHO_OUT_QUEUE_NAME = "Echo_Out";
+    public static final String MESSAGE_IN_QUEUE = "Echo_In";
+    public static final String MESSAGE_OUT_QUEUE = "Echo_Out";
 
     //public static final String ECHO_MESSAGE_COUNT_PROPERTY_NAME = "MessageCount";
 
     @Bean
     public Queue echoInQueue() {
-        return new Queue(ECHO_IN_QUEUE_NAME, false);
+        return new Queue(MESSAGE_IN_QUEUE, false);
     }
 
     @Bean
     public Queue echoOutQueue() {
-        return new Queue(ECHO_OUT_QUEUE_NAME, false);
+        return new Queue(MESSAGE_OUT_QUEUE, false);
     }
 
     @Bean
@@ -40,7 +40,7 @@ public class RabbitMQConfig {
     @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
-        rabbitTemplate.setDefaultReceiveQueue(ECHO_IN_QUEUE_NAME);
+        rabbitTemplate.setDefaultReceiveQueue(MESSAGE_IN_QUEUE);
         return rabbitTemplate;
     }
 

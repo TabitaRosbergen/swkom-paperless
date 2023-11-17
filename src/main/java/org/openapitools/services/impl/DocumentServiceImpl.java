@@ -1,22 +1,21 @@
 package org.openapitools.services.impl;
 
-import io.minio.*;
-import io.minio.messages.Item;
 import org.openapitools.configuration.RabbitMQConfig;
 import org.openapitools.persistence.entities.DocumentsDocumentEntity;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.Document;
+import org.openapitools.persistence.entities.DocumentsStoragepathEntity;
 import org.openapitools.persistence.repositories.DocumentsDocumentRepository;
-import org.openapitools.services.MinioService;
+import org.openapitools.services.requestservices.MinioService;
 import org.openapitools.services.mapper.DocumentMapper;
 import org.openapitools.services.requestservices.DocumentService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -45,19 +44,33 @@ public class DocumentServiceImpl implements DocumentService {
         DocumentsDocumentEntity documentToBeSaved = documentMapper.dtoToEntity(document);
 
         documentToBeSaved.setChecksum("checksum");
-        documentToBeSaved.setStorageType("pdf");
-        documentToBeSaved.setMimeType("pdf");
-
-        // save the document to the postgres database
-        documentsDocumentRepository.save(documentToBeSaved);
+        documentToBeSaved.setStorageType("minio");
+        documentToBeSaved.setMimeType("mimeType");
 
         // create the bucket if it doesn't exist.
         minioService.createBucket();
 
         // upload the document to minio
-        minioService.uploadDocument(document.getOriginalFileName().toString(), multipartFile);
+        String path = minioService.uploadDocument(multipartFile);
+
+        //create a StoragePath for the document
+        if (!StringUtils.isBlank(path)) {
+            DocumentsStoragepathEntity storagePath = new DocumentsStoragepathEntity();
+            storagePath.setPath(path);
+            storagePath.setMatchingAlgorithm(1);
+            storagePath.setMatch("match");
+            storagePath.setIsInsensitive(false);
+            storagePath.setName(multipartFile.getOriginalFilename());
+            storagePath.setOwner(null);
+
+            // save the storage path to the postgres database
+            documentToBeSaved.setStoragePath(storagePath);
+
+            // save the document to the postgres database
+            documentsDocumentRepository.save(documentToBeSaved);
+        }
 
         //send a message to the queue that a document has been uploaded
-        rabbitTemplate.convertAndSend(RabbitMQConfig.ECHO_IN_QUEUE_NAME, document.toString());
+        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, document.toString());
     }
 }

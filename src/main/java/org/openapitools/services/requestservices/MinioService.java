@@ -1,4 +1,4 @@
-package org.openapitools.services;
+package org.openapitools.services.requestservices;
 
 import io.minio.*;
 import io.minio.messages.Item;
@@ -32,13 +32,15 @@ public class MinioService {
         }
     }
 
-    public void uploadDocument(String documentName, MultipartFile multipartFile) {
+    public String uploadDocument(MultipartFile file) {
+        String path = "";
+
         try {
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(this.bucketName)
-                            .object(documentName)
-                            .stream(multipartFile.getInputStream(), multipartFile.getSize(), -1)
+                            .object(file.getOriginalFilename())
+                            .stream(file.getInputStream(), file.getSize(), -1)
                             .build());
 
             //get all documents from minio storage and print them
@@ -46,6 +48,8 @@ public class MinioService {
                     ListObjectsArgs.builder()
                             .bucket(this.bucketName)
                             .build());
+
+            path = bucketName + "/" + file.getOriginalFilename();
 
             for (Result<Item> result : results) {
                 Item item = result.get();
@@ -55,5 +59,6 @@ public class MinioService {
         } catch (Exception e) {
             System.out.println("Error occurred: " + e);
         }
+        return path;
     }
 }

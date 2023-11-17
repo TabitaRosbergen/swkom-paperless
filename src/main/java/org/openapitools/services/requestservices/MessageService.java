@@ -18,7 +18,7 @@ public class MessageService {
         this.rabbit = rabbit;
     }
 
-    @RabbitListener(queues = RabbitMQConfig.ECHO_IN_QUEUE_NAME)
+    @RabbitListener(queues = RabbitMQConfig.MESSAGE_IN_QUEUE)
     public void receive(String in) {
         log.info("MessageService received: '" + in + "'");
         System.out.println("MessageService received: '" + in + "'");
