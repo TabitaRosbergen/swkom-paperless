@@ -9,18 +9,29 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+
 @Component
 public class MessageService {
     private final RabbitTemplate rabbit;
-    Logger log = LoggerFactory.getLogger(MessageService.class);
+    private final MinioService minioService;
+    private final Logger log = LoggerFactory.getLogger(MessageService.class);
+
     @Autowired
-    public MessageService(RabbitTemplate rabbit) {
+    public MessageService(RabbitTemplate rabbit, MinioService minioService) {
         this.rabbit = rabbit;
+        this.minioService = minioService;
     }
 
     @RabbitListener(queues = RabbitMQConfig.MESSAGE_IN_QUEUE)
-    public void receive(String in) {
-        log.info("MessageService received: '" + in + "'");
-        System.out.println("MessageService received: '" + in + "'");
+    public void receive(String path) {
+        log.info("MessageService received: '" + path + "'");
+        System.out.println("MessageService received: '" + path + "'");
+
+        //retrieve the document from minio
+        File file = minioService.getDocument(path);
+
+        //Print the document
+        System.out.println("This is the file: " + file.getName());
     }
 }
