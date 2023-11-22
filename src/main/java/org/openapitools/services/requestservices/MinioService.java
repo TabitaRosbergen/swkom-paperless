@@ -38,12 +38,12 @@ public class MinioService {
         }
     }
 
-    public void uploadDocument(MultipartFile file, String path_in_bucket) {
+    public void uploadDocument(MultipartFile file, String nameInBucket) {
         try {
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(this.bucketName)
-                            .object(path_in_bucket)
+                            .object(nameInBucket)
                             .stream(file.getInputStream(), file.getSize(), -1)
                             .build());
 
@@ -80,15 +80,14 @@ public class MinioService {
         //convert the stream to a temporary file
         File tempFile = null;
         try {
-            tempFile = File.createTempFile("temp", ".tmp");
-
-            FileUtils.copyInputStreamToFile(stream, tempFile);
-
+            if (stream != null) {
+                tempFile = File.createTempFile("temp", ".tmp");
+                FileUtils.copyInputStreamToFile(stream, tempFile);
+            }
         } catch (Exception e) {
             System.out.println("Error occurred: " + e);
             logger.error("MinioService could not convert stream to temporary file: " + e);
         }
-
         return tempFile;
     }
 }

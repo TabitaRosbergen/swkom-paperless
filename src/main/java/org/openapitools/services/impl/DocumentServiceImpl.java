@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -51,13 +52,15 @@ public class DocumentServiceImpl implements DocumentService {
         // create the bucket if it doesn't exist.
         minioService.createBucket();
 
+        // generate a random id for the document path
+        String path = UUID.randomUUID() + "/" + multipartFile.getOriginalFilename();
+
         // upload the document to minio
-        String path_in_bucket = "TEST123" + "/" + multipartFile.getOriginalFilename();
-        minioService.uploadDocument(multipartFile, path_in_bucket);
+        minioService.uploadDocument(multipartFile, path);
 
         //create a StoragePath for the document
         DocumentsStoragepathEntity storagePath = new DocumentsStoragepathEntity();
-        storagePath.setPath(path_in_bucket);
+        storagePath.setPath(path);
         storagePath.setMatchingAlgorithm(1);
         storagePath.setMatch("match");
         storagePath.setIsInsensitive(false);
@@ -71,6 +74,6 @@ public class DocumentServiceImpl implements DocumentService {
         documentsDocumentRepository.save(documentToBeSaved);
 
         //send a message to the queue with the path to the document
-        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path_in_bucket);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
     }
 }
