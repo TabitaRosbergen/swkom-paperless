@@ -39,31 +39,19 @@ public class MessageService {
     }
 
     @RabbitListener(queues = RabbitMQConfig.MESSAGE_IN_QUEUE)
-    public void receive(String path) {
+    public void receive(String path) throws IOException {
         log.info("MessageService received: '" + path + "'");
         System.out.println("MessageService received: '" + path + "'");
 
         //retrieve the document from minio
         File file = minioService.getDocument(path);
 
-        byte[] bytes = null;
-              FileInputStream fis = null;
-
-        try {
-            fis = new FileInputStream(file);
-            //read file into bytes[]
-          fis.read(bytes);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        byte[] fileContent = Files.readAllBytes(file.toPath());
 
         //Print the document
         System.out.println("This is the file: " + file.getName());
 
-        testOCR(bytes);
+        testOCR(fileContent);
     }
 
     public void testOCR(byte[] bytes){
