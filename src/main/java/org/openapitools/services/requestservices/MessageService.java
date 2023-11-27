@@ -90,6 +90,9 @@ public class MessageService {
 		PDFRenderer pdfRenderer = new PDFRenderer(document);
 		StringBuilder out = new StringBuilder();
 
+        // tesseract funktioniert noch nicht
+        // unable to load library tesseract
+        // TODO fix it
         ITesseract _tesseract = new Tesseract();
 		_tesseract.setDatapath("/usr/share/tessdata/");
 		_tesseract.setLanguage("ita"); // choose your language
@@ -103,6 +106,7 @@ public class MessageService {
     	    ImageIO.write(bim, "png", temp);
 
     	    // TODO: Apply here OCR logic
+
             String result = null;
             try {
                 result = _tesseract.doOCR(temp);
