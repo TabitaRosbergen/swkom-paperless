@@ -9,6 +9,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class OCRService {
         try {
             fileContent = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            log.error(e.getMessage());
         }
 
         // Load file into PDFBox class
@@ -42,7 +43,7 @@ public class OCRService {
         try {
             document = Loader.loadPDF(fileContent);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            log.error(e.getMessage());
         }
 
         PDFTextStripper stripper = new PDFTextStripper();
@@ -50,8 +51,12 @@ public class OCRService {
 
         try {
             strippedText = stripper.getText(document);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+            // searchable PDF
+            if(strippedText.trim().isEmpty()){
+                strippedText = extractTextFromScannedDocument(document);
+            }
+        } catch (IOException | TesseractException e) {
+            log.error(e.getMessage());
         }
         return strippedText;
     }
@@ -64,15 +69,15 @@ public class OCRService {
         try {
             contentType = tika.detect(file);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            log.error(e.getMessage());
         }
 
-        contentType.replace("application/", "");
+        // contentType.replace("application/", "");
 
-        System.out.println("Content type: " + contentType);
+        log.info("Content type: " + contentType);
 
         switch (contentType) {
-            case "pdf":
+            case "application/pdf":
                 return readPdf(file);
             default:
                 return "";
@@ -124,42 +129,41 @@ public class OCRService {
 //        log.info(strippedText);
 //    }
 
-//    private String extractTextFromScannedDocument(PDDocument document) throws IOException, TesseractException {
-//
-//		// Extract images from file
-//		PDFRenderer pdfRenderer = new PDFRenderer(document);
-//		StringBuilder out = new StringBuilder();
-//
-//        // tesseract funktioniert noch nicht
-//        // unable to load library tesseract
-//        // TODO fix it
-//        ITesseract _tesseract = new Tesseract();
-//		_tesseract.setDatapath("/usr/share/tessdata/");
-//		_tesseract.setLanguage("ita"); // choose your language
-//
-//		for (int page = 0; page < document.getNumberOfPages(); page++)
-//		{
-//		    BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB);
-//
-//		    // Create a temp image file
-//    	    File temp = File.createTempFile("tempfile_" + page, ".png");
-//    	    ImageIO.write(bim, "png", temp);
-//
-//    	    // TODO: Apply here OCR logic
-//
-//            String result = null;
-//            try {
-//                result = _tesseract.doOCR(temp);
-//            } catch (TesseractException e) {
-//                throw new RuntimeException(e);
-//            }
-//            out.append(result);
-//
-//		    // Delete temp file
-//		    temp.delete();
-//
-//		}
-//
-//		return out.toString();
-//	}
+    private String extractTextFromScannedDocument(PDDocument document) throws IOException, TesseractException {
+
+		// Extract images from file
+		PDFRenderer pdfRenderer = new PDFRenderer(document);
+		StringBuilder out = new StringBuilder();
+
+        ITesseract instance = new Tesseract();
+        instance.setDatapath("src/main/resources/tessdata"); // replace with your tessdata path
+
+        ITesseract _tesseract = new Tesseract();
+		_tesseract.setDatapath("src/main/resources/tessdata");
+
+		for (int page = 0; page < document.getNumberOfPages(); page++)
+		{
+		    BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB);
+
+		    // Create a temp image file
+    	    File temp = File.createTempFile("tempfile_" + page, ".png");
+    	    ImageIO.write(bim, "png", temp);
+
+    	    // TODO: Apply here OCR logic
+
+            String result = null;
+            try {
+                result = _tesseract.doOCR(temp);
+            } catch (TesseractException e) {
+                throw new RuntimeException(e);
+            }
+            out.append(result);
+
+		    // Delete temp file
+		    temp.delete();
+
+		}
+
+		return out.toString();
+	}
 }

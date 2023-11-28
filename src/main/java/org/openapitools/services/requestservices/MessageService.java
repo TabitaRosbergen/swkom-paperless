@@ -35,9 +35,9 @@ public class MessageService {
         File file = minioService.getDocument(path);
 
         //Print the document
-        System.out.println("This is the file: " + file.getName());
+        log.info("This is the file: " + file.getName());
 
         String result = ocrService.getFileContent(file);
-        System.out.println("This is the result of the ocr service: " + result);
+        log.info("This is the result of the ocr service: " + result);
     }
 }

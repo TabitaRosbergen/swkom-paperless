@@ -55,11 +55,11 @@ public class MinioService {
 
             for (Result<Item> result : results) {
                 Item item = result.get();
-                System.out.println("Retrieved item: " + item.lastModified() + ", " + item.size() + ", " + item.objectName());
+                // System.out.println("Retrieved item: " + item.lastModified() + ", " + item.size() + ", " + item.objectName());
             }
 
         } catch (Exception e) {
-            System.out.println("Error occurred: " + e);
+            logger.error("Error occurred: " + e);
         }
     }
 
