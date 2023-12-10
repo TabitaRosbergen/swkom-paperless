@@ -11,3 +11,5 @@
 .idea/*
 !.idea/swkom-paperless.iml
 !.idea/vcs.xml
+
+target/*

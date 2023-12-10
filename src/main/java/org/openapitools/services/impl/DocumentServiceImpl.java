@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -75,5 +77,22 @@ public class DocumentServiceImpl implements DocumentService {
 
         //send a message to the queue with the path to the document
         rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
+    }
+
+    @Override
+    public List<Document> getDocuments() {
+        List<DocumentsDocumentEntity> documentsDocumentEntities = documentsDocumentRepository.findAll();
+
+        //print the number of documents in the database
+        logger.info("Number of documents in the database: " + documentsDocumentEntities.size());
+
+        List<Document> documents = new java.util.ArrayList<>(Collections.emptyList());
+
+        //convert each DocumentsDocumentEntity to a Document
+        for (DocumentsDocumentEntity documentsDocumentEntity : documentsDocumentEntities) {
+            documents.add(documentMapper.entityToDto(documentsDocumentEntity));
+        }
+
+        return documents;
     }
 }
