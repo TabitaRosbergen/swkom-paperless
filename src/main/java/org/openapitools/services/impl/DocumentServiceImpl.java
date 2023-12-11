@@ -77,6 +77,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         //send a message to the queue with the path to the document
         rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
+
     }
 
     @Override
