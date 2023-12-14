@@ -1,4 +1,4 @@
-package org.openapitools.services.requestservices;
+package org.openapitools.services.impl;
 
 import io.minio.*;
 import io.minio.messages.Item;

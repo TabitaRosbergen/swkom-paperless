@@ -1,4 +1,4 @@
-package org.openapitools.services;
+package org.openapitools.services.interfaces;
 
 import co.elastic.clients.elasticsearch._types.Result;
 import org.openapitools.model.Document;

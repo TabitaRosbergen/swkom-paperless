@@ -1,7 +1,6 @@
-package org.openapitools.services.requestservices;
+package org.openapitools.services.interfaces;
 
 import org.openapitools.model.Document;
-import org.openapitools.model.GetDocuments200Response;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.openapitools.services.requestservices;
+package org.openapitools.services.impl;
 
 import org.openapitools.configuration.RabbitMQConfig;
 
@@ -39,5 +39,12 @@ public class MessageService {
 
         String result = ocrService.getFileContent(file);
         log.info("This is the result of the ocr service: " + result);
+
+        sendMessage(result);
+    }
+
+    public void sendMessage(String message) {
+        log.info("MessageService sending: '" + message + "'");
+        rabbit.convertAndSend(RabbitMQConfig.MESSAGE_OUT_QUEUE, message);
     }
 }

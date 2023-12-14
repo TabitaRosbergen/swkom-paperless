@@ -6,14 +6,14 @@ import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.Document;
 import org.openapitools.persistence.entities.DocumentsStoragepathEntity;
 import org.openapitools.persistence.repositories.DocumentsDocumentRepository;
-import org.openapitools.services.requestservices.MinioService;
 import org.openapitools.services.mapper.DocumentMapper;
-import org.openapitools.services.requestservices.DocumentService;
+import org.openapitools.services.interfaces.DocumentService;
 import org.slf4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.amqp.core.Message;
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -72,12 +72,23 @@ public class DocumentServiceImpl implements DocumentService {
         // save the storage path to the postgres database
         documentToBeSaved.setStoragePath(storagePath);
 
-        // save the document to the postgres database
-        documentsDocumentRepository.save(documentToBeSaved);
-
         //send a message to the queue with the path to the document
         rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
 
+        Message responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
+
+        if(responseMessage == null) {
+            logger.error("No response from the queue");
+        }
+        else {
+            String responseJson = new String(responseMessage.getBody());
+            logger.info("Response from the queue: " + responseJson);
+
+            documentToBeSaved.setContent(responseJson);
+        }
+
+        // save the document to the postgres database
+        documentsDocumentRepository.save(documentToBeSaved);
     }
 
     @Override
