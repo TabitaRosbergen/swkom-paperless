@@ -1,5 +1,5 @@
 package org.openapitools.services.interfaces;
-
+/*
 import co.elastic.clients.elasticsearch._types.Result;
 import org.openapitools.model.Document;
 
@@ -13,3 +13,6 @@ public interface SearchIndexService {
 
     boolean deleteDocumentById(int id);
 }
+
+
+ */

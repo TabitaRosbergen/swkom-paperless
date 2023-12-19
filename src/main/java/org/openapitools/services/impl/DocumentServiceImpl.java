@@ -29,12 +29,15 @@ public class DocumentServiceImpl implements DocumentService {
     private final MinioService minioService;
     private final Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentServiceImpl.class);
 
+    private final ESService ESService;
+
     @Autowired
-    public DocumentServiceImpl(DocumentsDocumentRepository documentRepository, DocumentMapper documentMapper, RabbitTemplate rabbitTemplate, MinioService minioService) {
+    public DocumentServiceImpl(DocumentsDocumentRepository documentRepository, DocumentMapper documentMapper, RabbitTemplate rabbitTemplate, MinioService minioService, ESService ESService) {
         this.documentsDocumentRepository = documentRepository;
         this.documentMapper = documentMapper;
         this.rabbitTemplate = rabbitTemplate;
         this.minioService = minioService;
+        this.ESService = ESService;
     }
 
     @Override
@@ -89,6 +92,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         // save the document to the postgres database
         documentsDocumentRepository.save(documentToBeSaved);
+        ESService.save(documentToBeSaved);
     }
 
     @Override

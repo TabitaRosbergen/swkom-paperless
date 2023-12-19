@@ -25,6 +25,13 @@ services:
     ports:
       - "5432:5432"
 
+  elasticsearch:
+    image: elasticsearch:7.6.2
+    container_name: es762
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
 #  elastic_search:
 #    image: elasticsearch:8.7.1
 #    environment:
@@ -38,7 +45,7 @@ services:
 #    #   memlock:
 #    #     soft: -1
 #    #     hard: -1
-#    ports:
+#    portsa:
 #      - 9200:9200
 #      - 9300:9300
 #  kibanba:
