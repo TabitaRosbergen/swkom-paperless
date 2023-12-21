@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+
 @Service
 public class DocumentServiceImpl implements DocumentService {
 
@@ -28,16 +30,18 @@ public class DocumentServiceImpl implements DocumentService {
     private final RabbitTemplate rabbitTemplate;
     private final MinioService minioService;
     private final Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentServiceImpl.class);
-
     private final ESService ESService;
 
+    private final ElasticsearchOperations elasticsearchOperations;
+
     @Autowired
-    public DocumentServiceImpl(DocumentsDocumentRepository documentRepository, DocumentMapper documentMapper, RabbitTemplate rabbitTemplate, MinioService minioService, ESService ESService) {
+    public DocumentServiceImpl(DocumentsDocumentRepository documentRepository, DocumentMapper documentMapper, RabbitTemplate rabbitTemplate, MinioService minioService, ESService ESService, ElasticsearchOperations elasticsearchOperations) {
         this.documentsDocumentRepository = documentRepository;
         this.documentMapper = documentMapper;
         this.rabbitTemplate = rabbitTemplate;
         this.minioService = minioService;
         this.ESService = ESService;
+        this.elasticsearchOperations = elasticsearchOperations;
     }
 
     @Override
@@ -80,19 +84,31 @@ public class DocumentServiceImpl implements DocumentService {
 
         Message responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
 
-        if(responseMessage == null) {
+        if (responseMessage == null) {
             logger.error("No response from the queue");
-        }
-        else {
+        } else {
             String responseJson = new String(responseMessage.getBody());
             logger.info("Response from the queue: " + responseJson);
 
             documentToBeSaved.setContent(responseJson);
         }
 
-        // save the document to the postgres database
-        documentsDocumentRepository.save(documentToBeSaved);
-        ESService.save(documentToBeSaved);
+        elasticsearchOperations.indexOps(documentDTO.class).create();
+
+        documentDTO documentDTO = new documentDTO();
+        documentDTO.setId(documentToBeSaved.getId());
+        documentDTO.setContent(documentToBeSaved.getContent());
+
+        ESService.save(documentDTO);
+//
+//        //find all documents in the ESService that match the search query
+//        Page<documentDTO> documentDTOs = ESService.findByContentContains(documentToBeSaved.getContent(), PageRequest.of(0, 10));
+//
+//        //print the number of documents that match the search query
+//        logger.info("Number of documents that match the search query: " + documentDTOs.getTotalElements());
+//
+//        // save the document to the postgres database
+//        documentsDocumentRepository.save(documentToBeSaved);
     }
 
     @Override

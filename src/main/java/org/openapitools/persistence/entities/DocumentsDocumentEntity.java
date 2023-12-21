@@ -22,7 +22,6 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.InnerField;
 import org.springframework.data.elasticsearch.annotations.MultiField;
 
-@Document(indexName="document")
 @Entity
 @Data
 @Builder

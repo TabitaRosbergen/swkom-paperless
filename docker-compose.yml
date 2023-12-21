@@ -32,6 +32,9 @@ services:
       - "9200:9200"
     environment:
       - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+
 #  elastic_search:
 #    image: elasticsearch:8.7.1
 #    environment:

@@ -84,18 +84,15 @@
 
 package org.openapitools.services.impl;//package org.openapitools.services.impl;
 
-import org.openapitools.persistence.entities.DocumentsDocumentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-import org.springframework.stereotype.Repository;
 
 
-public interface ESService extends ElasticsearchRepository<DocumentsDocumentEntity, Integer> {
+public interface ESService extends ElasticsearchRepository<documentDTO, Integer> {
 
     //@Query("{\"bool\": {\"must\": [{\"match\": {\"DocumentsDocumentEntity.content\": \"?0\"}}]}}")
-    Page<DocumentsDocumentEntity> findByContentContains(String content, Pageable pageable);
+    Page<documentDTO> findByContentContains(String content, Pageable pageable);
 
     /*
     @Query("{\"bool\": {\"must\": [{\"match\": {\"authors.name\": \"?0\"}}]}}")
