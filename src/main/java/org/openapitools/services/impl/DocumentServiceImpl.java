@@ -9,8 +9,11 @@ import org.openapitools.persistence.repositories.DocumentsDocumentRepository;
 import org.openapitools.services.mapper.DocumentMapper;
 import org.openapitools.services.interfaces.DocumentService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.amqp.core.Message;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -29,7 +33,7 @@ public class DocumentServiceImpl implements DocumentService {
     private final DocumentMapper documentMapper;
     private final RabbitTemplate rabbitTemplate;
     private final MinioService minioService;
-    private final Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(MessageService.class);
     private final ESService ESService;
 
     private final ElasticsearchOperations elasticsearchOperations;
@@ -79,13 +83,17 @@ public class DocumentServiceImpl implements DocumentService {
         // save the storage path to the postgres database
         documentToBeSaved.setStoragePath(storagePath);
 
-        //send a message to the queue with the path to the document
+        // for some unknown reason every other document would fail so we call this two times, don't judge
+        // here be dragons
         rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
-
         Message responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
 
+        //send a message to the queue with the path to the document
+        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
+        responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
+
         if (responseMessage == null) {
-            logger.error("No response from the queue");
+            logger.error("No response from the queue ---------------------------------------------------------------------------------------------------------------------");
         } else {
             String responseJson = new String(responseMessage.getBody());
             logger.info("Response from the queue: " + responseJson);
@@ -93,13 +101,18 @@ public class DocumentServiceImpl implements DocumentService {
             documentToBeSaved.setContent(responseJson);
         }
 
+        //beide creates werfen die selbe exception: org.springframework.data.elasticsearch.NoSuchIndexException: Index null not found.;
+        // nested exception is ElasticsearchException[java.util.concurrent.ExecutionException: java.net.ConnectException: Connection refused];
+        // nested: ExecutionException[java.net.ConnectException: Connection refused];
+        // nested: ConnectException[Connection refused];
+        //elasticsearchOperations.indexOps(IndexCoordinates.of("files")).create();
         elasticsearchOperations.indexOps(documentDTO.class).create();
 
-        documentDTO documentDTO = new documentDTO();
-        documentDTO.setId(documentToBeSaved.getId());
-        documentDTO.setContent(documentToBeSaved.getContent());
-
-        ESService.save(documentDTO);
+//        documentDTO documentDTO = new documentDTO();
+//        documentDTO.setId(documentToBeSaved.getId().toString());
+//        documentDTO.setContent(documentToBeSaved.getContent());
+//
+//        ESService.save(documentDTO);
 //
 //        //find all documents in the ESService that match the search query
 //        Page<documentDTO> documentDTOs = ESService.findByContentContains(documentToBeSaved.getContent(), PageRequest.of(0, 10));

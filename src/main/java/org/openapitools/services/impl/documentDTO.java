@@ -9,11 +9,11 @@ import javax.persistence.Id;
 public class documentDTO {
 
     @Id
-    public Integer id;
+    public String id;
 
     public String content;
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -21,7 +21,7 @@ public class documentDTO {
         this.content = content;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
