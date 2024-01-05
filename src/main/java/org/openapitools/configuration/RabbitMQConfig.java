@@ -30,7 +30,7 @@ public class RabbitMQConfig {
 
     @Bean
     public static ConnectionFactory connectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("swkom-paperless-rabbitmq-1");
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
         connectionFactory.setPort(5672);
         connectionFactory.setUsername("guest");
         connectionFactory.setPassword("guest");

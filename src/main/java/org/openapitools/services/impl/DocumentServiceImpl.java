@@ -1,5 +1,6 @@
 package org.openapitools.services.impl;
 
+import com.google.common.collect.Lists;
 import org.openapitools.configuration.RabbitMQConfig;
 import org.openapitools.persistence.entities.DocumentsDocumentEntity;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -12,8 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.amqp.core.Message;
@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+
+
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -34,7 +35,7 @@ public class DocumentServiceImpl implements DocumentService {
     private final RabbitTemplate rabbitTemplate;
     private final MinioService minioService;
     private final Logger logger = LoggerFactory.getLogger(MessageService.class);
-    private final ESService ESService;
+    private final ESService esService;
 
     private final ElasticsearchOperations elasticsearchOperations;
 
@@ -44,7 +45,7 @@ public class DocumentServiceImpl implements DocumentService {
         this.documentMapper = documentMapper;
         this.rabbitTemplate = rabbitTemplate;
         this.minioService = minioService;
-        this.ESService = ESService;
+        this.esService = ESService;
         this.elasticsearchOperations = elasticsearchOperations;
     }
 
@@ -85,12 +86,12 @@ public class DocumentServiceImpl implements DocumentService {
 
         // for some unknown reason every other document would fail so we call this two times, don't judge
         // here be dragons
-        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
-        Message responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
+//        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
+//        Message responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
 
         //send a message to the queue with the path to the document
         rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
-        responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
+        Message responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
 
         if (responseMessage == null) {
             logger.error("No response from the queue ---------------------------------------------------------------------------------------------------------------------");
@@ -106,22 +107,30 @@ public class DocumentServiceImpl implements DocumentService {
         // nested: ExecutionException[java.net.ConnectException: Connection refused];
         // nested: ConnectException[Connection refused];
         //elasticsearchOperations.indexOps(IndexCoordinates.of("files")).create();
-        elasticsearchOperations.indexOps(documentDTO.class).create();
 
-//        documentDTO documentDTO = new documentDTO();
-//        documentDTO.setId(documentToBeSaved.getId().toString());
-//        documentDTO.setContent(documentToBeSaved.getContent());
+//        elasticsearchOperations.indexOps(documentDTO.class).create();
+
+        //        // save the document to the postgres database
+        documentsDocumentRepository.save(documentToBeSaved);
+
+        logger.info("id = " + documentToBeSaved.getId());
+        DocumentDTO documentDTO = new DocumentDTO();
+        documentDTO.setId(String.valueOf(documentToBeSaved.getId()));
+        documentDTO.setContent(documentToBeSaved.getContent());
+
+        esService.save(documentDTO);
 //
-//        ESService.save(documentDTO);
+        try {
+//            Page<DocumentDTO> documentDTOs = esService.findByContentContainsCustom(documentToBeSaved.getContent(), PageRequest.of(0, 10));
+            List<DocumentDTO> documentDTOs = Lists.newArrayList(esService.findAll());
+            logger.info("Number of documents that match the search query: " + documentDTOs.size());
+            documentDTOs.forEach(d -> logger.info(d.toString()));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 //
-//        //find all documents in the ESService that match the search query
-//        Page<documentDTO> documentDTOs = ESService.findByContentContains(documentToBeSaved.getContent(), PageRequest.of(0, 10));
-//
-//        //print the number of documents that match the search query
-//        logger.info("Number of documents that match the search query: " + documentDTOs.getTotalElements());
-//
-//        // save the document to the postgres database
-//        documentsDocumentRepository.save(documentToBeSaved);
+
     }
 
     @Override

@@ -7,12 +7,12 @@ services:
     ports:
       - "8080:80"
 
-  backend:
-    image: paperless:openjdk
-    build:
-      dockerfile: Dockerfile
-    ports:
-      - "8088:8088"
+#  backend:
+#    image: paperless:openjdk
+#    build:
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8088:8088"
 
   postgres:
     image: postgres
@@ -26,8 +26,9 @@ services:
       - "5432:5432"
 
   elasticsearch:
-    image: elasticsearch:7.6.2
-    container_name: es762
+    image: elasticsearch:7.17.16
+#    container_name: es762
+    platform: "linux/amd64"
     ports:
       - "9200:9200"
     environment:
