@@ -81,13 +81,12 @@ public class DocumentServiceImpl implements DocumentService {
         // save the storage path to the postgres database
         documentToBeSaved.setStoragePath(storagePath);
 
-        // TODO try with only one call, because now it seems like both calls work
         // for some unknown reason every other document would fail so we call this two times, don't judge
         // here be dragons
         rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
         Message responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
 
-        //send a message to the queue with the path to the document
+//        //send a message to the queue with the path to the document
         rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
         responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
 
