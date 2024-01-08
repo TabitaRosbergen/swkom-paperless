@@ -89,7 +89,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 
-public interface ESService extends ElasticsearchRepository<documentDTO, Integer> {
+public interface ESDocumentRepository extends ElasticsearchRepository<documentDTO, Integer> {
 
     //@Query("{\"bool\": {\"must\": [{\"match\": {\"DocumentsDocumentEntity.content\": \"?0\"}}]}}")
     Page<documentDTO> findByContentContains(String content, Pageable pageable);

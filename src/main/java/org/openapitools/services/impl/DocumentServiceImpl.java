@@ -12,8 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.amqp.core.Message;
@@ -24,7 +22,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -34,17 +31,17 @@ public class DocumentServiceImpl implements DocumentService {
     private final RabbitTemplate rabbitTemplate;
     private final MinioService minioService;
     private final Logger logger = LoggerFactory.getLogger(MessageService.class);
-    private final ESService ESService;
+    private final ESDocumentRepository ESDocumentRepository;
 
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
-    public DocumentServiceImpl(DocumentsDocumentRepository documentRepository, DocumentMapper documentMapper, RabbitTemplate rabbitTemplate, MinioService minioService, ESService ESService, ElasticsearchOperations elasticsearchOperations) {
+    public DocumentServiceImpl(DocumentsDocumentRepository documentRepository, DocumentMapper documentMapper, RabbitTemplate rabbitTemplate, MinioService minioService, ESDocumentRepository ESDocumentRepository, ElasticsearchOperations elasticsearchOperations) {
         this.documentsDocumentRepository = documentRepository;
         this.documentMapper = documentMapper;
         this.rabbitTemplate = rabbitTemplate;
         this.minioService = minioService;
-        this.ESService = ESService;
+        this.ESDocumentRepository = ESDocumentRepository;
         this.elasticsearchOperations = elasticsearchOperations;
     }
 
@@ -112,10 +109,10 @@ public class DocumentServiceImpl implements DocumentService {
 //        documentDTO.setId(documentToBeSaved.getId().toString());
 //        documentDTO.setContent(documentToBeSaved.getContent());
 //
-//        ESService.save(documentDTO);
+//        ESDocumentRepository.save(documentDTO);
 //
-//        //find all documents in the ESService that match the search query
-//        Page<documentDTO> documentDTOs = ESService.findByContentContains(documentToBeSaved.getContent(), PageRequest.of(0, 10));
+//        //find all documents in the ESDocumentRepository that match the search query
+//        Page<documentDTO> documentDTOs = ESDocumentRepository.findByContentContains(documentToBeSaved.getContent(), PageRequest.of(0, 10));
 //
 //        //print the number of documents that match the search query
 //        logger.info("Number of documents that match the search query: " + documentDTOs.getTotalElements());
