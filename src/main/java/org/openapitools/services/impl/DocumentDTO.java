@@ -6,7 +6,7 @@ import javax.persistence.Id;
 
 
 @Document(indexName="files")
-public class documentDTO {
+public class DocumentDTO {
 
     @Id
     public String id;

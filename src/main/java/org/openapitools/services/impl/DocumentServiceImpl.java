@@ -1,5 +1,6 @@
 package org.openapitools.services.impl;
 
+import com.google.common.collect.Lists;
 import org.openapitools.configuration.RabbitMQConfig;
 import org.openapitools.persistence.entities.DocumentsDocumentEntity;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -31,17 +32,17 @@ public class DocumentServiceImpl implements DocumentService {
     private final RabbitTemplate rabbitTemplate;
     private final MinioService minioService;
     private final Logger logger = LoggerFactory.getLogger(MessageService.class);
-    private final ESDocumentRepository ESDocumentRepository;
+    private final ESDocumentRepository esDocumentRepository;
 
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
-    public DocumentServiceImpl(DocumentsDocumentRepository documentRepository, DocumentMapper documentMapper, RabbitTemplate rabbitTemplate, MinioService minioService, ESDocumentRepository ESDocumentRepository, ElasticsearchOperations elasticsearchOperations) {
+    public DocumentServiceImpl(DocumentsDocumentRepository documentRepository, DocumentMapper documentMapper, RabbitTemplate rabbitTemplate, MinioService minioService, ESDocumentRepository esDocumentRepository, ElasticsearchOperations elasticsearchOperations) {
         this.documentsDocumentRepository = documentRepository;
         this.documentMapper = documentMapper;
         this.rabbitTemplate = rabbitTemplate;
         this.minioService = minioService;
-        this.ESDocumentRepository = ESDocumentRepository;
+        this.esDocumentRepository = esDocumentRepository;
         this.elasticsearchOperations = elasticsearchOperations;
     }
 
@@ -80,6 +81,7 @@ public class DocumentServiceImpl implements DocumentService {
         // save the storage path to the postgres database
         documentToBeSaved.setStoragePath(storagePath);
 
+        // TODO try with only one call, because now it seems like both calls work
         // for some unknown reason every other document would fail so we call this two times, don't judge
         // here be dragons
         rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
@@ -103,22 +105,40 @@ public class DocumentServiceImpl implements DocumentService {
         // nested: ExecutionException[java.net.ConnectException: Connection refused];
         // nested: ConnectException[Connection refused];
         //elasticsearchOperations.indexOps(IndexCoordinates.of("files")).create();
-        elasticsearchOperations.indexOps(documentDTO.class).create();
+//        elasticsearchOperations.indexOps(DocumentDTO.class).create();
 
-//        documentDTO documentDTO = new documentDTO();
-//        documentDTO.setId(documentToBeSaved.getId().toString());
-//        documentDTO.setContent(documentToBeSaved.getContent());
+//        DocumentDTO DocumentDTO = new DocumentDTO();
+//        DocumentDTO.setId(documentToBeSaved.getId().toString());
+//        DocumentDTO.setContent(documentToBeSaved.getContent());
 //
-//        ESDocumentRepository.save(documentDTO);
+//        ESDocumentRepository.save(DocumentDTO);
 //
 //        //find all documents in the ESDocumentRepository that match the search query
-//        Page<documentDTO> documentDTOs = ESDocumentRepository.findByContentContains(documentToBeSaved.getContent(), PageRequest.of(0, 10));
+//        Page<DocumentDTO> documentDTOs = ESDocumentRepository.findByContentContains(documentToBeSaved.getContent(), PageRequest.of(0, 10));
 //
 //        //print the number of documents that match the search query
 //        logger.info("Number of documents that match the search query: " + documentDTOs.getTotalElements());
 //
-//        // save the document to the postgres database
-//        documentsDocumentRepository.save(documentToBeSaved);
+        // save the document to the postgres database
+        documentsDocumentRepository.save(documentToBeSaved);
+
+        logger.info("id = " + documentToBeSaved.getId());
+        DocumentDTO documentDTO = new DocumentDTO();
+        documentDTO.setId(String.valueOf(documentToBeSaved.getId()));
+        documentDTO.setContent(documentToBeSaved.getContent());
+
+        esDocumentRepository.save(documentDTO);
+
+        //
+//        try {
+////            Page<DocumentDTO> documentDTOs = esService.findByContentContainsCustom(documentToBeSaved.getContent(), PageRequest.of(0, 10));
+//            List<DocumentDTO> documentDTOs = Lists.newArrayList(esDocumentRepository.findAll());
+//            logger.info("Number of documents that match the search query: " + documentDTOs.size());
+//            documentDTOs.forEach(d -> logger.info(d.toString()));
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
