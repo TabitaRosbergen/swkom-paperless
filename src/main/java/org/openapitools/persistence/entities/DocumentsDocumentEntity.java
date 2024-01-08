@@ -9,6 +9,18 @@ import javax.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
+import static org.springframework.data.elasticsearch.annotations.FieldType.Keyword;
+import static org.springframework.data.elasticsearch.annotations.FieldType.Nested;
+import static org.springframework.data.elasticsearch.annotations.FieldType.Text;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.InnerField;
+import org.springframework.data.elasticsearch.annotations.MultiField;
 
 @Entity
 @Data
@@ -17,7 +29,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class DocumentsDocumentEntity {
 
-    @Id
+    @javax.persistence.Id
     @Column(nullable = false, updatable = false)
     @SequenceGenerator(
             name = "primary_sequence",
@@ -29,11 +41,14 @@ public class DocumentsDocumentEntity {
             strategy = GenerationType.SEQUENCE,
             generator = "primary_sequence"
     )
+
+    @Id
     private Integer id;
 
     @Column(nullable = false, length = 128)
     private String title;
 
+    @MultiField(mainField = @Field(type = Text, fielddata = true), otherFields = { @InnerField(suffix = "verbatim", type = Keyword) })
     @Column(nullable = false, columnDefinition = "text")
     private String content;
 

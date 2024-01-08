@@ -5,21 +5,18 @@
  */
 package org.openapitools.api;
 
-import org.openapitools.jackson.nullable.JsonNullable;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.openapitools.model.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
-
-import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springframework.http.HttpStatus;
@@ -31,9 +28,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
@@ -49,29 +44,29 @@ public interface ApiApi {
     /**
      * POST /api/acknowledge_tasks/
      *
-     * @param ackTasksRequest  (optional)
+     * @param ackTasksRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "ackTasks",
-        tags = { "Tasks" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = AckTasks200Response.class))
-            })
-        }
+            operationId = "ackTasks",
+            tags = {"Tasks"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = AckTasks200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/acknowledge_tasks/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/api/acknowledge_tasks/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<AckTasks200Response> ackTasks(
-        @Parameter(name = "AckTasksRequest", description = "") @Valid @RequestBody(required = false) AckTasksRequest ackTasksRequest
+            @Parameter(name = "AckTasksRequest", description = "") @Valid @RequestBody(required = false) AckTasksRequest ackTasksRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"result\" : 0 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -90,18 +85,18 @@ public interface ApiApi {
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "apiGet",
-        tags = { "Login" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success")
-        }
+            operationId = "apiGet",
+            tags = {"Login"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/"
+            method = RequestMethod.GET,
+            value = "/api/"
     )
     default ResponseEntity<Void> apiGet(
-        
+
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -112,29 +107,29 @@ public interface ApiApi {
      * GET /api/search/autocomplete/
      *
      * @param term  (optional)
-     * @param limit  (optional)
+     * @param limit (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "autoComplete",
-        tags = { "Search" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = String.class)))
-            })
-        }
+            operationId = "autoComplete",
+            tags = {"Search"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = String.class)))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/search/autocomplete/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/search/autocomplete/",
+            produces = {"application/json"}
     )
     default ResponseEntity<List<String>> autoComplete(
-        @Parameter(name = "term", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "term", required = false) String term,
-        @Parameter(name = "limit", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "limit", required = false) Integer limit
+            @Parameter(name = "term", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "term", required = false) String term,
+            @Parameter(name = "limit", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "limit", required = false) Integer limit
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "[ \"\", \"\" ]";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -150,23 +145,23 @@ public interface ApiApi {
     /**
      * POST /api/documents/bulk_edit/
      *
-     * @param bulkEditRequest  (optional)
+     * @param bulkEditRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "bulkEdit",
-        tags = { "Documents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success")
-        }
+            operationId = "bulkEdit",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/documents/bulk_edit/",
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/api/documents/bulk_edit/",
+            consumes = {"application/json"}
     )
     default ResponseEntity<Void> bulkEdit(
-        @Parameter(name = "BulkEditRequest", description = "") @Valid @RequestBody(required = false) BulkEditRequest bulkEditRequest
+            @Parameter(name = "BulkEditRequest", description = "") @Valid @RequestBody(required = false) BulkEditRequest bulkEditRequest
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -176,29 +171,29 @@ public interface ApiApi {
     /**
      * POST /api/correspondents/
      *
-     * @param createCorrespondentRequest  (optional)
+     * @param createCorrespondentRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "createCorrespondent",
-        tags = { "Correspondents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = CreateCorrespondentRequest.class))
-            })
-        }
+            operationId = "createCorrespondent",
+            tags = {"Correspondents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = CreateCorrespondentRequest.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/correspondents/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/api/correspondents/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<CreateCorrespondentRequest> createCorrespondent(
-        @Parameter(name = "CreateCorrespondentRequest", description = "") @Valid @RequestBody(required = false) CreateCorrespondentRequest createCorrespondentRequest
+            @Parameter(name = "CreateCorrespondentRequest", description = "") @Valid @RequestBody(required = false) CreateCorrespondentRequest createCorrespondentRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"owner\" : 6, \"matching_algorithm\" : 0, \"is_insensitive\" : true, \"name\" : \"name\", \"match\" : \"match\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -214,29 +209,29 @@ public interface ApiApi {
     /**
      * POST /api/document_types/
      *
-     * @param createCorrespondentRequest  (optional)
+     * @param createCorrespondentRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "createDocumentType",
-        tags = { "DocumentTypes" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = CreateDocumentType200Response.class))
-            })
-        }
+            operationId = "createDocumentType",
+            tags = {"DocumentTypes"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = CreateDocumentType200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/document_types/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/api/document_types/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<CreateDocumentType200Response> createDocumentType(
-        @Parameter(name = "CreateCorrespondentRequest", description = "") @Valid @RequestBody(required = false) CreateCorrespondentRequest createCorrespondentRequest
+            @Parameter(name = "CreateCorrespondentRequest", description = "") @Valid @RequestBody(required = false) CreateCorrespondentRequest createCorrespondentRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"owner\" : 1, \"matching_algorithm\" : 6, \"user_can_change\" : true, \"is_insensitive\" : true, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 0, \"slug\" : \"slug\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -252,26 +247,26 @@ public interface ApiApi {
     /**
      * POST /api/groups/
      *
-     * @param createGroupRequest  (optional)
+     * @param createGroupRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "createGroup",
-        tags = { "Login" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = Object.class))
-            })
-        }
+            operationId = "createGroup",
+            tags = {"Login"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Object.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/groups/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/api/groups/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<Object> createGroup(
-        @Parameter(name = "CreateGroupRequest", description = "") @Valid @RequestBody(required = false) CreateGroupRequest createGroupRequest
+            @Parameter(name = "CreateGroupRequest", description = "") @Valid @RequestBody(required = false) CreateGroupRequest createGroupRequest
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -281,23 +276,23 @@ public interface ApiApi {
     /**
      * POST /api/saved_views/
      *
-     * @param createSavedViewsRequest  (optional)
+     * @param createSavedViewsRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "createSavedViews",
-        tags = { "Config" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success")
-        }
+            operationId = "createSavedViews",
+            tags = {"Config"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/saved_views/",
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/api/saved_views/",
+            consumes = {"application/json"}
     )
     default ResponseEntity<Void> createSavedViews(
-        @Parameter(name = "CreateSavedViewsRequest", description = "") @Valid @RequestBody(required = false) CreateSavedViewsRequest createSavedViewsRequest
+            @Parameter(name = "CreateSavedViewsRequest", description = "") @Valid @RequestBody(required = false) CreateSavedViewsRequest createSavedViewsRequest
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -307,29 +302,29 @@ public interface ApiApi {
     /**
      * POST /api/storage_paths/
      *
-     * @param createStoragePathRequest  (optional)
+     * @param createStoragePathRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "createStoragePath",
-        tags = { "Config" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = CreateStoragePath200Response.class))
-            })
-        }
+            operationId = "createStoragePath",
+            tags = {"Config"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = CreateStoragePath200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/storage_paths/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/api/storage_paths/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<CreateStoragePath200Response> createStoragePath(
-        @Parameter(name = "CreateStoragePathRequest", description = "") @Valid @RequestBody(required = false) CreateStoragePathRequest createStoragePathRequest
+            @Parameter(name = "CreateStoragePathRequest", description = "") @Valid @RequestBody(required = false) CreateStoragePathRequest createStoragePathRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"owner\" : 1, \"path\" : \"path\", \"matching_algorithm\" : 6, \"user_can_change\" : true, \"is_insensitive\" : true, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 0, \"slug\" : \"slug\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -345,29 +340,29 @@ public interface ApiApi {
     /**
      * POST /api/tags/
      *
-     * @param createTagRequest  (optional)
+     * @param createTagRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "createTag",
-        tags = { "Tags" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = CreateTag200Response.class))
-            })
-        }
+            operationId = "createTag",
+            tags = {"Tags"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = CreateTag200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/tags/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/api/tags/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<CreateTag200Response> createTag(
-        @Parameter(name = "CreateTagRequest", description = "") @Valid @RequestBody(required = false) CreateTagRequest createTagRequest
+            @Parameter(name = "CreateTagRequest", description = "") @Valid @RequestBody(required = false) CreateTagRequest createTagRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"owner\" : 1, \"matching_algorithm\" : 6, \"user_can_change\" : true, \"color\" : \"color\", \"is_insensitive\" : true, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 0, \"text_color\" : \"text_color\", \"is_inbox_tag\" : true, \"slug\" : \"slug\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -383,29 +378,29 @@ public interface ApiApi {
     /**
      * POST /api/ui_settings/
      *
-     * @param createUISettingsRequest  (optional)
+     * @param createUISettingsRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "createUISettings",
-        tags = { "Config" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = CreateUISettings200Response.class))
-            })
-        }
+            operationId = "createUISettings",
+            tags = {"Config"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = CreateUISettings200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/ui_settings/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/api/ui_settings/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<CreateUISettings200Response> createUISettings(
-        @Parameter(name = "CreateUISettingsRequest", description = "") @Valid @RequestBody(required = false) CreateUISettingsRequest createUISettingsRequest
+            @Parameter(name = "CreateUISettingsRequest", description = "") @Valid @RequestBody(required = false) CreateUISettingsRequest createUISettingsRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"success\" : true }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -421,29 +416,29 @@ public interface ApiApi {
     /**
      * POST /api/users/
      *
-     * @param createUserRequest  (optional)
+     * @param createUserRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "createUser",
-        tags = { "Login" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetUsers200ResponseResultsInner.class))
-            })
-        }
+            operationId = "createUser",
+            tags = {"Login"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetUsers200ResponseResultsInner.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/users/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/api/users/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<GetUsers200ResponseResultsInner> createUser(
-        @Parameter(name = "CreateUserRequest", description = "") @Valid @RequestBody(required = false) CreateUserRequest createUserRequest
+            @Parameter(name = "CreateUserRequest", description = "") @Valid @RequestBody(required = false) CreateUserRequest createUserRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"is_active\" : true, \"is_superuser\" : true, \"user_permissions\" : [ \"\", \"\" ], \"is_staff\" : true, \"last_name\" : \"last_name\", \"groups\" : [ \"\", \"\" ], \"password\" : \"password\", \"id\" : 5, \"date_joined\" : \"date_joined\", \"first_name\" : \"first_name\", \"email\" : \"email\", \"username\" : \"username\", \"inherited_permissions\" : [ \"inherited_permissions\", \"inherited_permissions\" ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -459,22 +454,22 @@ public interface ApiApi {
     /**
      * DELETE /api/correspondents/{id}/
      *
-     * @param id  (required)
+     * @param id (required)
      * @return Success (status code 204)
      */
     @Operation(
-        operationId = "deleteCorrespondent",
-        tags = { "Correspondents" },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Success")
-        }
+            operationId = "deleteCorrespondent",
+            tags = {"Correspondents"},
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = "/api/correspondents/{id}/"
+            method = RequestMethod.DELETE,
+            value = "/api/correspondents/{id}/"
     )
     default ResponseEntity<Void> deleteCorrespondent(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -484,22 +479,22 @@ public interface ApiApi {
     /**
      * DELETE /api/documents/{id}/
      *
-     * @param id  (required)
+     * @param id (required)
      * @return Success (status code 204)
      */
     @Operation(
-        operationId = "deleteDocument",
-        tags = { "Documents" },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Success")
-        }
+            operationId = "deleteDocument",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = "/api/documents/{id}/"
+            method = RequestMethod.DELETE,
+            value = "/api/documents/{id}/"
     )
     default ResponseEntity<Void> deleteDocument(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -509,22 +504,22 @@ public interface ApiApi {
     /**
      * DELETE /api/document_types/{id}/
      *
-     * @param id  (required)
+     * @param id (required)
      * @return Success (status code 204)
      */
     @Operation(
-        operationId = "deleteDocumentType",
-        tags = { "DocumentTypes" },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Success")
-        }
+            operationId = "deleteDocumentType",
+            tags = {"DocumentTypes"},
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = "/api/document_types/{id}/"
+            method = RequestMethod.DELETE,
+            value = "/api/document_types/{id}/"
     )
     default ResponseEntity<Void> deleteDocumentType(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -534,22 +529,22 @@ public interface ApiApi {
     /**
      * DELETE /api/groups/{id}/
      *
-     * @param id  (required)
+     * @param id (required)
      * @return Success (status code 204)
      */
     @Operation(
-        operationId = "deleteGroup",
-        tags = { "Login" },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Success")
-        }
+            operationId = "deleteGroup",
+            tags = {"Login"},
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = "/api/groups/{id}/"
+            method = RequestMethod.DELETE,
+            value = "/api/groups/{id}/"
     )
     default ResponseEntity<Void> deleteGroup(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -559,22 +554,22 @@ public interface ApiApi {
     /**
      * DELETE /api/storage_paths/{id}/
      *
-     * @param id  (required)
+     * @param id (required)
      * @return Success (status code 204)
      */
     @Operation(
-        operationId = "deleteStoragePath",
-        tags = { "Config" },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Success")
-        }
+            operationId = "deleteStoragePath",
+            tags = {"Config"},
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = "/api/storage_paths/{id}/"
+            method = RequestMethod.DELETE,
+            value = "/api/storage_paths/{id}/"
     )
     default ResponseEntity<Void> deleteStoragePath(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -584,22 +579,22 @@ public interface ApiApi {
     /**
      * DELETE /api/tags/{id}/
      *
-     * @param id  (required)
+     * @param id (required)
      * @return Success (status code 204)
      */
     @Operation(
-        operationId = "deleteTag",
-        tags = { "Tags" },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Success")
-        }
+            operationId = "deleteTag",
+            tags = {"Tags"},
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = "/api/tags/{id}/"
+            method = RequestMethod.DELETE,
+            value = "/api/tags/{id}/"
     )
     default ResponseEntity<Void> deleteTag(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -609,22 +604,22 @@ public interface ApiApi {
     /**
      * DELETE /api/users/{id}/
      *
-     * @param id  (required)
+     * @param id (required)
      * @return Success (status code 204)
      */
     @Operation(
-        operationId = "deleteUser",
-        tags = { "Login" },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Success")
-        }
+            operationId = "deleteUser",
+            tags = {"Login"},
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = "/api/users/{id}/"
+            method = RequestMethod.DELETE,
+            value = "/api/users/{id}/"
     )
     default ResponseEntity<Void> deleteUser(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -634,27 +629,27 @@ public interface ApiApi {
     /**
      * GET /api/documents/{id}/download/
      *
-     * @param id  (required)
-     * @param original  (optional)
+     * @param id       (required)
+     * @param original (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "downloadDocument",
-        tags = { "Documents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/pdf", schema = @Schema(implementation = org.springframework.core.io.Resource.class))
-            })
-        }
+            operationId = "downloadDocument",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/pdf", schema = @Schema(implementation = org.springframework.core.io.Resource.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/documents/{id}/download/",
-        produces = { "application/pdf" }
+            method = RequestMethod.GET,
+            value = "/api/documents/{id}/download/",
+            produces = {"application/pdf"}
     )
     default ResponseEntity<org.springframework.core.io.Resource> downloadDocument(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
-        @Parameter(name = "original", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "original", required = false) Boolean original
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
+            @Parameter(name = "original", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "original", required = false) Boolean original
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -664,30 +659,30 @@ public interface ApiApi {
     /**
      * GET /api/correspondents/
      *
-     * @param page  (optional)
-     * @param fullPerms  (optional)
+     * @param page      (optional)
+     * @param fullPerms (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getCorrespondents",
-        tags = { "Correspondents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetCorrespondents200Response.class))
-            })
-        }
+            operationId = "getCorrespondents",
+            tags = {"Correspondents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetCorrespondents200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/correspondents/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/correspondents/",
+            produces = {"application/json"}
     )
     default ResponseEntity<GetCorrespondents200Response> getCorrespondents(
-        @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
-        @Parameter(name = "full_perms", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "full_perms", required = false) Boolean fullPerms
+            @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(name = "full_perms", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "full_perms", required = false) Boolean fullPerms
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"next\" : 6, \"all\" : [ 5, 5 ], \"previous\" : 1, \"count\" : 0, \"results\" : [ { \"owner\" : 9, \"matching_algorithm\" : 2, \"document_count\" : 7, \"is_insensitive\" : true, \"permissions\" : { \"view\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ \"\", \"\" ] }, \"change\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ \"\", \"\" ] } }, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 5, \"last_correspondence\" : \"last_correspondence\", \"slug\" : \"slug\" }, { \"owner\" : 9, \"matching_algorithm\" : 2, \"document_count\" : 7, \"is_insensitive\" : true, \"permissions\" : { \"view\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ \"\", \"\" ] }, \"change\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ \"\", \"\" ] } }, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 5, \"last_correspondence\" : \"last_correspondence\", \"slug\" : \"slug\" } ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -703,32 +698,32 @@ public interface ApiApi {
     /**
      * GET /api/documents/{id}/
      *
-     * @param id  (required)
-     * @param page  (optional)
-     * @param fullPerms  (optional)
+     * @param id        (required)
+     * @param page      (optional)
+     * @param fullPerms (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getDocument",
-        tags = { "Documents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetDocument200Response.class))
-            })
-        }
+            operationId = "getDocument",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetDocument200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/documents/{id}/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/documents/{id}/",
+            produces = {"application/json"}
     )
     default ResponseEntity<GetDocument200Response> getDocument(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
-        @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
-        @Parameter(name = "full_perms", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "full_perms", required = false) Boolean fullPerms
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
+            @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(name = "full_perms", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "full_perms", required = false) Boolean fullPerms
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"owner\" : 7, \"archive_serial_number\" : 2, \"notes\" : [ { \"note\" : \"note\", \"created\" : \"created\", \"document\" : 1, \"id\" : 7, \"user\" : 1 }, { \"note\" : \"note\", \"created\" : \"created\", \"document\" : 1, \"id\" : 7, \"user\" : 1 } ], \"added\" : \"added\", \"created\" : \"created\", \"title\" : \"title\", \"content\" : \"content\", \"tags\" : [ 5, 5 ], \"storage_path\" : 5, \"permissions\" : { \"view\" : { \"groups\" : [ 3, 3 ], \"users\" : [ 9, 9 ] }, \"change\" : { \"groups\" : [ 3, 3 ], \"users\" : [ 9, 9 ] } }, \"archived_file_name\" : \"archived_file_name\", \"modified\" : \"modified\", \"correspondent\" : 6, \"original_file_name\" : \"original_file_name\", \"id\" : 0, \"created_date\" : \"created_date\", \"document_type\" : 1 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -744,28 +739,28 @@ public interface ApiApi {
     /**
      * GET /api/documents/{id}/metadata/
      *
-     * @param id  (required)
+     * @param id (required)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getDocumentMetadata",
-        tags = { "Documents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetDocumentMetadata200Response.class))
-            })
-        }
+            operationId = "getDocumentMetadata",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetDocumentMetadata200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/documents/{id}/metadata/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/documents/{id}/metadata/",
+            produces = {"application/json"}
     )
     default ResponseEntity<GetDocumentMetadata200Response> getDocumentMetadata(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"archive_size\" : 6, \"archive_metadata\" : [ { \"prefix\" : \"prefix\", \"namespace\" : \"namespace\", \"value\" : \"value\", \"key\" : \"key\" }, { \"prefix\" : \"prefix\", \"namespace\" : \"namespace\", \"value\" : \"value\", \"key\" : \"key\" } ], \"original_metadata\" : [ \"\", \"\" ], \"original_filename\" : \"original_filename\", \"original_mime_type\" : \"original_mime_type\", \"archive_checksum\" : \"archive_checksum\", \"original_checksum\" : \"original_checksum\", \"lang\" : \"lang\", \"media_filename\" : \"media_filename\", \"has_archive_version\" : true, \"archive_media_filename\" : \"archive_media_filename\", \"original_size\" : 0 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -781,25 +776,25 @@ public interface ApiApi {
     /**
      * GET /api/documents/{id}/preview/
      *
-     * @param id  (required)
+     * @param id (required)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getDocumentPreview",
-        tags = { "Documents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/pdf", schema = @Schema(implementation = org.springframework.core.io.Resource.class))
-            })
-        }
+            operationId = "getDocumentPreview",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/pdf", schema = @Schema(implementation = org.springframework.core.io.Resource.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/documents/{id}/preview/",
-        produces = { "application/pdf" }
+            method = RequestMethod.GET,
+            value = "/api/documents/{id}/preview/",
+            produces = {"application/pdf"}
     )
     default ResponseEntity<org.springframework.core.io.Resource> getDocumentPreview(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -809,28 +804,28 @@ public interface ApiApi {
     /**
      * GET /api/documents/{id}/suggestions/
      *
-     * @param id  (required)
+     * @param id (required)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getDocumentSuggestions",
-        tags = { "Documents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetDocumentSuggestions200Response.class))
-            })
-        }
+            operationId = "getDocumentSuggestions",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetDocumentSuggestions200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/documents/{id}/suggestions/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/documents/{id}/suggestions/",
+            produces = {"application/json"}
     )
     default ResponseEntity<GetDocumentSuggestions200Response> getDocumentSuggestions(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"storage_paths\" : [ \"\", \"\" ], \"document_types\" : [ \"\", \"\" ], \"dates\" : [ \"\", \"\" ], \"correspondents\" : [ \"\", \"\" ], \"tags\" : [ \"\", \"\" ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -846,25 +841,25 @@ public interface ApiApi {
     /**
      * GET /api/documents/{id}/thumb/
      *
-     * @param id  (required)
+     * @param id (required)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getDocumentThumb",
-        tags = { "Documents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/pdf", schema = @Schema(implementation = org.springframework.core.io.Resource.class))
-            })
-        }
+            operationId = "getDocumentThumb",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/pdf", schema = @Schema(implementation = org.springframework.core.io.Resource.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/documents/{id}/thumb/",
-        produces = { "application/pdf" }
+            method = RequestMethod.GET,
+            value = "/api/documents/{id}/thumb/",
+            produces = {"application/pdf"}
     )
     default ResponseEntity<org.springframework.core.io.Resource> getDocumentThumb(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -874,30 +869,30 @@ public interface ApiApi {
     /**
      * GET /api/document_types/
      *
-     * @param page  (optional)
-     * @param fullPerms  (optional)
+     * @param page      (optional)
+     * @param fullPerms (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getDocumentTypes",
-        tags = { "DocumentTypes" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetDocumentTypes200Response.class))
-            })
-        }
+            operationId = "getDocumentTypes",
+            tags = {"DocumentTypes"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetDocumentTypes200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/document_types/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/document_types/",
+            produces = {"application/json"}
     )
     default ResponseEntity<GetDocumentTypes200Response> getDocumentTypes(
-        @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
-        @Parameter(name = "full_perms", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "full_perms", required = false) Boolean fullPerms
+            @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(name = "full_perms", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "full_perms", required = false) Boolean fullPerms
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"next\" : 6, \"all\" : [ 5, 5 ], \"previous\" : 1, \"count\" : 0, \"results\" : [ { \"owner\" : 9, \"matching_algorithm\" : 2, \"document_count\" : 7, \"is_insensitive\" : true, \"permissions\" : { \"view\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ \"\", \"\" ] }, \"change\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ \"\", \"\" ] } }, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 5, \"slug\" : \"slug\" }, { \"owner\" : 9, \"matching_algorithm\" : 2, \"document_count\" : 7, \"is_insensitive\" : true, \"permissions\" : { \"view\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ \"\", \"\" ] }, \"change\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ \"\", \"\" ] } }, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 5, \"slug\" : \"slug\" } ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -913,44 +908,44 @@ public interface ApiApi {
     /**
      * GET /api/documents/
      *
-     * @param page  (optional)
-     * @param pageSize  (optional)
-     * @param query  (optional)
-     * @param ordering  (optional)
-     * @param tagsIdAll  (optional)
+     * @param page            (optional)
+     * @param pageSize        (optional)
+     * @param query           (optional)
+     * @param ordering        (optional)
+     * @param tagsIdAll       (optional)
      * @param documentTypeId  (optional)
-     * @param storagePathIdIn  (optional)
-     * @param correspondentId  (optional)
-     * @param truncateContent  (optional)
+     * @param storagePathIdIn (optional)
+     * @param correspondentId (optional)
+     * @param truncateContent (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getDocuments",
-        tags = { "Documents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetDocuments200Response.class))
-            })
-        }
+            operationId = "getDocuments",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetDocuments200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/documents/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/documents/",
+            produces = {"application/json"}
     )
     default ResponseEntity<GetDocuments200Response> getDocuments(
-        @Parameter(name = "Page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "Page", required = false) Integer page,
-        @Parameter(name = "page_size", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page_size", required = false) Integer pageSize,
-        @Parameter(name = "query", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "query", required = false) String query,
-        @Parameter(name = "ordering", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "ordering", required = false) String ordering,
-        @Parameter(name = "tags__id__all", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "tags__id__all", required = false) List<Integer> tagsIdAll,
-        @Parameter(name = "document_type__id", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "document_type__id", required = false) Integer documentTypeId,
-        @Parameter(name = "storage_path__id__in", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "storage_path__id__in", required = false) Integer storagePathIdIn,
-        @Parameter(name = "correspondent__id", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "correspondent__id", required = false) Integer correspondentId,
-        @Parameter(name = "truncate_content", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "truncate_content", required = false) Boolean truncateContent
+            @Parameter(name = "Page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "Page", required = false) Integer page,
+            @Parameter(name = "page_size", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page_size", required = false) Integer pageSize,
+            @Parameter(name = "query", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "query", required = false) String query,
+            @Parameter(name = "ordering", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "ordering", required = false) String ordering,
+            @Parameter(name = "tags__id__all", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "tags__id__all", required = false) List<Integer> tagsIdAll,
+            @Parameter(name = "document_type__id", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "document_type__id", required = false) Integer documentTypeId,
+            @Parameter(name = "storage_path__id__in", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "storage_path__id__in", required = false) Integer storagePathIdIn,
+            @Parameter(name = "correspondent__id", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "correspondent__id", required = false) Integer correspondentId,
+            @Parameter(name = "truncate_content", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "truncate_content", required = false) Boolean truncateContent
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"next\" : 6, \"all\" : [ 5, 5 ], \"previous\" : 1, \"count\" : 0, \"results\" : [ { \"owner\" : 4, \"user_can_change\" : true, \"archive_serial_number\" : 2, \"notes\" : [ { \"note\" : \"note\", \"created\" : \"created\", \"document\" : 1, \"id\" : 7, \"user\" : 1 }, { \"note\" : \"note\", \"created\" : \"created\", \"document\" : 1, \"id\" : 7, \"user\" : 1 } ], \"added\" : \"added\", \"created\" : \"created\", \"title\" : \"title\", \"content\" : \"content\", \"tags\" : [ 3, 3 ], \"storage_path\" : 9, \"archived_file_name\" : \"archived_file_name\", \"modified\" : \"modified\", \"correspondent\" : 2, \"original_file_name\" : \"original_file_name\", \"id\" : 5, \"created_date\" : \"created_date\", \"document_type\" : 7 }, { \"owner\" : 4, \"user_can_change\" : true, \"archive_serial_number\" : 2, \"notes\" : [ { \"note\" : \"note\", \"created\" : \"created\", \"document\" : 1, \"id\" : 7, \"user\" : 1 }, { \"note\" : \"note\", \"created\" : \"created\", \"document\" : 1, \"id\" : 7, \"user\" : 1 } ], \"added\" : \"added\", \"created\" : \"created\", \"title\" : \"title\", \"content\" : \"content\", \"tags\" : [ 3, 3 ], \"storage_path\" : 9, \"archived_file_name\" : \"archived_file_name\", \"modified\" : \"modified\", \"correspondent\" : 2, \"original_file_name\" : \"original_file_name\", \"id\" : 5, \"created_date\" : \"created_date\", \"document_type\" : 7 } ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -966,30 +961,30 @@ public interface ApiApi {
     /**
      * GET /api/groups/
      *
-     * @param page  (optional)
-     * @param pageSize  (optional)
+     * @param page     (optional)
+     * @param pageSize (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getGroups",
-        tags = { "Login" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetGroups200Response.class))
-            })
-        }
+            operationId = "getGroups",
+            tags = {"Login"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetGroups200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/groups/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/groups/",
+            produces = {"application/json"}
     )
     default ResponseEntity<GetGroups200Response> getGroups(
-        @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
-        @Parameter(name = "page_size", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page_size", required = false) Integer pageSize
+            @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(name = "page_size", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page_size", required = false) Integer pageSize
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"next\" : 6, \"all\" : [ \"\", \"\" ], \"previous\" : 1, \"count\" : 0, \"results\" : [ \"\", \"\" ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1005,28 +1000,28 @@ public interface ApiApi {
     /**
      * GET /api/logs/{id}/
      *
-     * @param id  (required)
+     * @param id (required)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getLog",
-        tags = { "Config" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = String.class)))
-            })
-        }
+            operationId = "getLog",
+            tags = {"Config"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = String.class)))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/logs/{id}/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/logs/{id}/",
+            produces = {"application/json"}
     )
     default ResponseEntity<List<String>> getLog(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") String id
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") String id
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "[ \"\", \"\" ]";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1045,24 +1040,24 @@ public interface ApiApi {
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getLogs",
-        tags = { "Config" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = String.class)))
-            })
-        }
+            operationId = "getLogs",
+            tags = {"Config"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = String.class)))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/logs/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/logs/",
+            produces = {"application/json"}
     )
     default ResponseEntity<List<String>> getLogs(
-        
+
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "[ \"\", \"\" ]";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1078,30 +1073,30 @@ public interface ApiApi {
     /**
      * GET /api/saved_views/
      *
-     * @param page  (optional)
-     * @param pageSize  (optional)
+     * @param page     (optional)
+     * @param pageSize (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getSavedViews",
-        tags = { "Config" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetSavedViews200Response.class))
-            })
-        }
+            operationId = "getSavedViews",
+            tags = {"Config"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetSavedViews200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/saved_views/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/saved_views/",
+            produces = {"application/json"}
     )
     default ResponseEntity<GetSavedViews200Response> getSavedViews(
-        @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
-        @Parameter(name = "page_size", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page_size", required = false) Integer pageSize
+            @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(name = "page_size", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page_size", required = false) Integer pageSize
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"next\" : 6, \"all\" : [ 5, 5 ], \"previous\" : 1, \"count\" : 0, \"results\" : [ { \"owner\" : { \"is_superuser\" : true, \"is_active\" : true, \"user_permissions\" : [ 9, 9 ], \"is_staff\" : true, \"last_login\" : \"last_login\", \"last_name\" : \"last_name\", \"groups\" : [ \"\", \"\" ], \"password\" : \"password\", \"id\" : 7, \"date_joined\" : \"date_joined\", \"first_name\" : \"first_name\", \"email\" : \"email\", \"username\" : \"username\" }, \"user_can_change\" : true, \"sort_field\" : \"sort_field\", \"show_on_dashboard\" : true, \"name\" : \"name\", \"show_in_sidebar\" : true, \"filter_rules\" : [ { \"rule_type\" : 2, \"value\" : \"value\" }, { \"rule_type\" : 2, \"value\" : \"value\" } ], \"sort_reverse\" : true, \"id\" : 5 }, { \"owner\" : { \"is_superuser\" : true, \"is_active\" : true, \"user_permissions\" : [ 9, 9 ], \"is_staff\" : true, \"last_login\" : \"last_login\", \"last_name\" : \"last_name\", \"groups\" : [ \"\", \"\" ], \"password\" : \"password\", \"id\" : 7, \"date_joined\" : \"date_joined\", \"first_name\" : \"first_name\", \"email\" : \"email\", \"username\" : \"username\" }, \"user_can_change\" : true, \"sort_field\" : \"sort_field\", \"show_on_dashboard\" : true, \"name\" : \"name\", \"show_in_sidebar\" : true, \"filter_rules\" : [ { \"rule_type\" : 2, \"value\" : \"value\" }, { \"rule_type\" : 2, \"value\" : \"value\" } ], \"sort_reverse\" : true, \"id\" : 5 } ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1117,30 +1112,30 @@ public interface ApiApi {
     /**
      * GET /api/storage_paths/
      *
-     * @param page  (optional)
-     * @param fullPerms  (optional)
+     * @param page      (optional)
+     * @param fullPerms (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getStoragePaths",
-        tags = { "Config" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetStoragePaths200Response.class))
-            })
-        }
+            operationId = "getStoragePaths",
+            tags = {"Config"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetStoragePaths200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/storage_paths/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/storage_paths/",
+            produces = {"application/json"}
     )
     default ResponseEntity<GetStoragePaths200Response> getStoragePaths(
-        @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
-        @Parameter(name = "full_perms", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "full_perms", required = false) Boolean fullPerms
+            @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(name = "full_perms", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "full_perms", required = false) Boolean fullPerms
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"next\" : true, \"all\" : [ 6, 6 ], \"previous\" : true, \"count\" : 0, \"results\" : [ { \"owner\" : 2, \"path\" : \"path\", \"matching_algorithm\" : 5, \"document_count\" : 5, \"is_insensitive\" : true, \"permissions\" : { \"view\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ 7, 7 ] }, \"change\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ 7, 7 ] } }, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 1, \"slug\" : \"slug\" }, { \"owner\" : 2, \"path\" : \"path\", \"matching_algorithm\" : 5, \"document_count\" : 5, \"is_insensitive\" : true, \"permissions\" : { \"view\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ 7, 7 ] }, \"change\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ 7, 7 ] } }, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 1, \"slug\" : \"slug\" } ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1156,30 +1151,30 @@ public interface ApiApi {
     /**
      * GET /api/tags/
      *
-     * @param page  (optional)
-     * @param fullPerms  (optional)
+     * @param page      (optional)
+     * @param fullPerms (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getTags",
-        tags = { "Tags" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetTags200Response.class))
-            })
-        }
+            operationId = "getTags",
+            tags = {"Tags"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetTags200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/tags/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/tags/",
+            produces = {"application/json"}
     )
     default ResponseEntity<GetTags200Response> getTags(
-        @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
-        @Parameter(name = "full_perms", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "full_perms", required = false) Boolean fullPerms
+            @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(name = "full_perms", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "full_perms", required = false) Boolean fullPerms
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"next\" : 6, \"all\" : [ 5, 5 ], \"previous\" : 1, \"count\" : 0, \"results\" : [ { \"owner\" : 9, \"matching_algorithm\" : 2, \"document_count\" : 7, \"color\" : \"color\", \"is_insensitive\" : true, \"permissions\" : { \"view\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ \"\", \"\" ] }, \"change\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ \"\", \"\" ] } }, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 5, \"text_color\" : \"text_color\", \"is_inbox_tag\" : true, \"slug\" : \"slug\" }, { \"owner\" : 9, \"matching_algorithm\" : 2, \"document_count\" : 7, \"color\" : \"color\", \"is_insensitive\" : true, \"permissions\" : { \"view\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ \"\", \"\" ] }, \"change\" : { \"groups\" : [ \"\", \"\" ], \"users\" : [ \"\", \"\" ] } }, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 5, \"text_color\" : \"text_color\", \"is_inbox_tag\" : true, \"slug\" : \"slug\" } ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1198,24 +1193,24 @@ public interface ApiApi {
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getTasks",
-        tags = { "Tasks" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = GetTasks200ResponseInner.class)))
-            })
-        }
+            operationId = "getTasks",
+            tags = {"Tasks"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = GetTasks200ResponseInner.class)))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/tasks/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/tasks/",
+            produces = {"application/json"}
     )
     default ResponseEntity<List<GetTasks200ResponseInner>> getTasks(
-        
+
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "[ { \"date_done\" : \"date_done\", \"result\" : \"result\", \"acknowledged\" : true, \"task_file_name\" : \"task_file_name\", \"date_created\" : \"date_created\", \"related_document\" : \"related_document\", \"task_id\" : \"task_id\", \"id\" : 0, \"type\" : \"type\", \"status\" : \"status\" }, { \"date_done\" : \"date_done\", \"result\" : \"result\", \"acknowledged\" : true, \"task_file_name\" : \"task_file_name\", \"date_created\" : \"date_created\", \"related_document\" : \"related_document\", \"task_id\" : \"task_id\", \"id\" : 0, \"type\" : \"type\", \"status\" : \"status\" } ]";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1231,23 +1226,23 @@ public interface ApiApi {
     /**
      * POST /api/token/
      *
-     * @param userInfo  (optional)
+     * @param userInfo (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getToken",
-        tags = { "Login" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success")
-        }
+            operationId = "getToken",
+            tags = {"Login"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/token/",
-        consumes = { "application/json", "text/json", "application/*+json" }
+            method = RequestMethod.POST,
+            value = "/api/token/",
+            consumes = {"application/json", "text/json", "application/*+json"}
     )
     default ResponseEntity<Void> getToken(
-        @Parameter(name = "UserInfo", description = "") @Valid @RequestBody(required = false) UserInfo userInfo
+            @Parameter(name = "UserInfo", description = "") @Valid @RequestBody(required = false) UserInfo userInfo
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -1260,24 +1255,24 @@ public interface ApiApi {
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getUISettings",
-        tags = { "Config" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetUISettings200Response.class))
-            })
-        }
+            operationId = "getUISettings",
+            tags = {"Config"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetUISettings200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/ui_settings/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/ui_settings/",
+            produces = {"application/json"}
     )
     default ResponseEntity<GetUISettings200Response> getUISettings(
-        
+
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"settings\" : { \"update_checking\" : { \"backend_setting\" : \"backend_setting\" } }, \"permissions\" : [ \"permissions\", \"permissions\" ], \"display_name\" : \"display_name\", \"user\" : { \"is_superuser\" : true, \"groups\" : [ \"\", \"\" ], \"id\" : 0, \"username\" : \"username\" } }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1293,30 +1288,30 @@ public interface ApiApi {
     /**
      * GET /api/users/
      *
-     * @param page  (optional)
-     * @param pageSize  (optional)
+     * @param page     (optional)
+     * @param pageSize (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "getUsers",
-        tags = { "Login" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetUsers200Response.class))
-            })
-        }
+            operationId = "getUsers",
+            tags = {"Login"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetUsers200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/users/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/users/",
+            produces = {"application/json"}
     )
     default ResponseEntity<GetUsers200Response> getUsers(
-        @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
-        @Parameter(name = "page_size", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page_size", required = false) Integer pageSize
+            @Parameter(name = "page", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page", required = false) Integer page,
+            @Parameter(name = "page_size", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "page_size", required = false) Integer pageSize
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"next\" : 6, \"all\" : [ 5, 5 ], \"previous\" : 1, \"count\" : 0, \"results\" : [ { \"is_active\" : true, \"is_superuser\" : true, \"user_permissions\" : [ \"\", \"\" ], \"is_staff\" : true, \"last_name\" : \"last_name\", \"groups\" : [ \"\", \"\" ], \"password\" : \"password\", \"id\" : 5, \"date_joined\" : \"date_joined\", \"first_name\" : \"first_name\", \"email\" : \"email\", \"username\" : \"username\", \"inherited_permissions\" : [ \"inherited_permissions\", \"inherited_permissions\" ] }, { \"is_active\" : true, \"is_superuser\" : true, \"user_permissions\" : [ \"\", \"\" ], \"is_staff\" : true, \"last_name\" : \"last_name\", \"groups\" : [ \"\", \"\" ], \"password\" : \"password\", \"id\" : 5, \"date_joined\" : \"date_joined\", \"first_name\" : \"first_name\", \"email\" : \"email\", \"username\" : \"username\", \"inherited_permissions\" : [ \"inherited_permissions\", \"inherited_permissions\" ] } ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1335,18 +1330,18 @@ public interface ApiApi {
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "root",
-        tags = { "Login" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success")
-        }
+            operationId = "root",
+            tags = {"Login"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/"
+            method = RequestMethod.POST,
+            value = "/api/"
     )
     default ResponseEntity<Void> root(
-        
+
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
@@ -1356,29 +1351,29 @@ public interface ApiApi {
     /**
      * POST /api/documents/selection_data/
      *
-     * @param selectionDataRequest  (optional)
+     * @param selectionDataRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "selectionData",
-        tags = { "Documents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = SelectionData200Response.class))
-            })
-        }
+            operationId = "selectionData",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = SelectionData200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/documents/selection_data/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/api/documents/selection_data/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<SelectionData200Response> selectionData(
-        @Parameter(name = "SelectionDataRequest", description = "") @Valid @RequestBody(required = false) SelectionDataRequest selectionDataRequest
+            @Parameter(name = "SelectionDataRequest", description = "") @Valid @RequestBody(required = false) SelectionDataRequest selectionDataRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"selected_storage_paths\" : [ { \"document_count\" : 6, \"id\" : 0 }, { \"document_count\" : 6, \"id\" : 0 } ], \"selected_document_types\" : [ { \"document_count\" : 6, \"id\" : 0 }, { \"document_count\" : 6, \"id\" : 0 } ], \"selected_correspondents\" : [ { \"document_count\" : 6, \"id\" : 0 }, { \"document_count\" : 6, \"id\" : 0 } ], \"selected_tags\" : [ { \"document_count\" : 6, \"id\" : 0 }, { \"document_count\" : 6, \"id\" : 0 } ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1397,24 +1392,24 @@ public interface ApiApi {
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "statistics",
-        tags = { "Login" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = Statistics200Response.class))
-            })
-        }
+            operationId = "statistics",
+            tags = {"Login"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Statistics200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/api/statistics/",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/api/statistics/",
+            produces = {"application/json"}
     )
     default ResponseEntity<Statistics200Response> statistics(
-        
+
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"document_file_type_counts\" : [ { \"mime_type\" : \"mime_type\", \"mime_type_count\" : 5 }, { \"mime_type\" : \"mime_type\", \"mime_type_count\" : 5 } ], \"documents_inbox\" : 6, \"inbox_tag\" : 1, \"documents_total\" : 0, \"character_count\" : 5 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1430,31 +1425,31 @@ public interface ApiApi {
     /**
      * PUT /api/correspondents/{id}/
      *
-     * @param id  (required)
-     * @param updateCorrespondentRequest  (optional)
+     * @param id                         (required)
+     * @param updateCorrespondentRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "updateCorrespondent",
-        tags = { "Correspondents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateCorrespondent200Response.class))
-            })
-        }
+            operationId = "updateCorrespondent",
+            tags = {"Correspondents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateCorrespondent200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.PUT,
-        value = "/api/correspondents/{id}/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.PUT,
+            value = "/api/correspondents/{id}/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<UpdateCorrespondent200Response> updateCorrespondent(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
-        @Parameter(name = "UpdateCorrespondentRequest", description = "") @Valid @RequestBody(required = false) UpdateCorrespondentRequest updateCorrespondentRequest
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
+            @Parameter(name = "UpdateCorrespondentRequest", description = "") @Valid @RequestBody(required = false) UpdateCorrespondentRequest updateCorrespondentRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"owner\" : 5, \"matching_algorithm\" : 6, \"user_can_change\" : true, \"document_count\" : 1, \"is_insensitive\" : true, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 0, \"last_correspondence\" : 5, \"slug\" : \"slug\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1470,31 +1465,31 @@ public interface ApiApi {
     /**
      * PUT /api/documents/{id}/
      *
-     * @param id  (required)
-     * @param updateDocumentRequest  (optional)
+     * @param id                    (required)
+     * @param updateDocumentRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "updateDocument",
-        tags = { "Documents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateDocument200Response.class))
-            })
-        }
+            operationId = "updateDocument",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateDocument200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.PUT,
-        value = "/api/documents/{id}/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.PUT,
+            value = "/api/documents/{id}/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<UpdateDocument200Response> updateDocument(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
-        @Parameter(name = "UpdateDocumentRequest", description = "") @Valid @RequestBody(required = false) UpdateDocumentRequest updateDocumentRequest
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
+            @Parameter(name = "UpdateDocumentRequest", description = "") @Valid @RequestBody(required = false) UpdateDocumentRequest updateDocumentRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"owner\" : 7, \"user_can_change\" : true, \"archive_serial_number\" : 2, \"notes\" : [ \"\", \"\" ], \"added\" : \"added\", \"created\" : \"created\", \"title\" : \"title\", \"content\" : \"content\", \"tags\" : [ 5, 5 ], \"storage_path\" : 5, \"archived_file_name\" : \"archived_file_name\", \"modified\" : \"modified\", \"correspondent\" : 6, \"original_file_name\" : \"original_file_name\", \"id\" : 0, \"created_date\" : \"created_date\", \"document_type\" : 1 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1510,31 +1505,31 @@ public interface ApiApi {
     /**
      * PUT /api/document_types/{id}/
      *
-     * @param id  (required)
-     * @param updateDocumentTypeRequest  (optional)
+     * @param id                        (required)
+     * @param updateDocumentTypeRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "updateDocumentType",
-        tags = { "DocumentTypes" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateDocumentType200Response.class))
-            })
-        }
+            operationId = "updateDocumentType",
+            tags = {"DocumentTypes"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateDocumentType200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.PUT,
-        value = "/api/document_types/{id}/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.PUT,
+            value = "/api/document_types/{id}/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<UpdateDocumentType200Response> updateDocumentType(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
-        @Parameter(name = "UpdateDocumentTypeRequest", description = "") @Valid @RequestBody(required = false) UpdateDocumentTypeRequest updateDocumentTypeRequest
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
+            @Parameter(name = "UpdateDocumentTypeRequest", description = "") @Valid @RequestBody(required = false) UpdateDocumentTypeRequest updateDocumentTypeRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"owner\" : 5, \"matching_algorithm\" : 6, \"user_can_change\" : true, \"document_count\" : 1, \"is_insensitive\" : true, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 0, \"slug\" : \"slug\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1550,31 +1545,31 @@ public interface ApiApi {
     /**
      * PUT /api/groups/{id}/
      *
-     * @param id  (required)
-     * @param updateGroupRequest  (optional)
+     * @param id                 (required)
+     * @param updateGroupRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "updateGroup",
-        tags = { "Login" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateGroup200Response.class))
-            })
-        }
+            operationId = "updateGroup",
+            tags = {"Login"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateGroup200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.PUT,
-        value = "/api/groups/{id}/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.PUT,
+            value = "/api/groups/{id}/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<UpdateGroup200Response> updateGroup(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
-        @Parameter(name = "UpdateGroupRequest", description = "") @Valid @RequestBody(required = false) UpdateGroupRequest updateGroupRequest
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
+            @Parameter(name = "UpdateGroupRequest", description = "") @Valid @RequestBody(required = false) UpdateGroupRequest updateGroupRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"permissions\" : [ \"permissions\", \"permissions\" ], \"name\" : \"name\", \"id\" : 0 }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1590,31 +1585,31 @@ public interface ApiApi {
     /**
      * PUT /api/storage_paths/{id}/
      *
-     * @param id  (required)
-     * @param updateStoragePathRequest  (optional)
+     * @param id                       (required)
+     * @param updateStoragePathRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "updateStoragePath",
-        tags = { "Config" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateStoragePath200Response.class))
-            })
-        }
+            operationId = "updateStoragePath",
+            tags = {"Config"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateStoragePath200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.PUT,
-        value = "/api/storage_paths/{id}/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.PUT,
+            value = "/api/storage_paths/{id}/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<UpdateStoragePath200Response> updateStoragePath(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
-        @Parameter(name = "UpdateStoragePathRequest", description = "") @Valid @RequestBody(required = false) UpdateStoragePathRequest updateStoragePathRequest
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
+            @Parameter(name = "UpdateStoragePathRequest", description = "") @Valid @RequestBody(required = false) UpdateStoragePathRequest updateStoragePathRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"owner\" : 5, \"path\" : \"path\", \"matching_algorithm\" : 6, \"user_can_change\" : true, \"document_count\" : 1, \"is_insensitive\" : true, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 0, \"slug\" : \"slug\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1630,31 +1625,31 @@ public interface ApiApi {
     /**
      * PUT /api/tags/{id}/
      *
-     * @param id  (required)
-     * @param updateTagRequest  (optional)
+     * @param id               (required)
+     * @param updateTagRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "updateTag",
-        tags = { "Tags" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateTag200Response.class))
-            })
-        }
+            operationId = "updateTag",
+            tags = {"Tags"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateTag200Response.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.PUT,
-        value = "/api/tags/{id}/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.PUT,
+            value = "/api/tags/{id}/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<UpdateTag200Response> updateTag(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
-        @Parameter(name = "UpdateTagRequest", description = "") @Valid @RequestBody(required = false) UpdateTagRequest updateTagRequest
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
+            @Parameter(name = "UpdateTagRequest", description = "") @Valid @RequestBody(required = false) UpdateTagRequest updateTagRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"owner\" : 5, \"matching_algorithm\" : 6, \"user_can_change\" : true, \"document_count\" : 1, \"color\" : \"color\", \"is_insensitive\" : true, \"name\" : \"name\", \"match\" : \"match\", \"id\" : 0, \"text_color\" : \"text_color\", \"is_inbox_tag\" : true, \"slug\" : \"slug\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1670,31 +1665,31 @@ public interface ApiApi {
     /**
      * PUT /api/users/{id}/
      *
-     * @param id  (required)
-     * @param updateUserRequest  (optional)
+     * @param id                (required)
+     * @param updateUserRequest (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "updateUser",
-        tags = { "Login" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success", content = {
-                @Content(mediaType = "application/json", schema = @Schema(implementation = GetUsers200ResponseResultsInner.class))
-            })
-        }
+            operationId = "updateUser",
+            tags = {"Login"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = GetUsers200ResponseResultsInner.class))
+                    })
+            }
     )
     @RequestMapping(
-        method = RequestMethod.PUT,
-        value = "/api/users/{id}/",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.PUT,
+            value = "/api/users/{id}/",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<GetUsers200ResponseResultsInner> updateUser(
-        @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
-        @Parameter(name = "UpdateUserRequest", description = "") @Valid @RequestBody(required = false) UpdateUserRequest updateUserRequest
+            @Parameter(name = "id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("id") Integer id,
+            @Parameter(name = "UpdateUserRequest", description = "") @Valid @RequestBody(required = false) UpdateUserRequest updateUserRequest
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"is_active\" : true, \"is_superuser\" : true, \"user_permissions\" : [ \"\", \"\" ], \"is_staff\" : true, \"last_name\" : \"last_name\", \"groups\" : [ \"\", \"\" ], \"password\" : \"password\", \"id\" : 5, \"date_joined\" : \"date_joined\", \"first_name\" : \"first_name\", \"email\" : \"email\", \"username\" : \"username\", \"inherited_permissions\" : [ \"inherited_permissions\", \"inherited_permissions\" ] }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -1710,38 +1705,58 @@ public interface ApiApi {
     /**
      * POST /api/documents/post_document/
      *
-     * @param title  (optional)
-     * @param created  (optional)
+     * @param title         (optional)
+     * @param created       (optional)
      * @param documentType  (optional)
-     * @param tags  (optional)
-     * @param correspondent  (optional)
-     * @param document  (optional)
+     * @param tags          (optional)
+     * @param correspondent (optional)
+     * @param document      (optional)
      * @return Success (status code 200)
      */
     @Operation(
-        operationId = "uploadDocument",
-        tags = { "Documents" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Success")
-        }
+            operationId = "uploadDocument",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success")
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/api/documents/post_document/",
-        consumes = { "multipart/form-data" }
+            method = RequestMethod.POST,
+            value = "/api/documents/post_document/",
+            consumes = {"multipart/form-data"}
     )
     default ResponseEntity<Void> uploadDocument(
-        @Parameter(name = "title", description = "") @Valid @RequestParam(value = "title", required = false) String title,
-        @Parameter(name = "created", description = "") @Valid @RequestParam(value = "created", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime created,
-        @Parameter(name = "document_type", description = "") @Valid @RequestParam(value = "document_type", required = false) Integer documentType,
-        @Parameter(name = "tags", description = "") @Valid @RequestPart(value = "tags", required = false) List<Integer> tags,
-        @Parameter(name = "correspondent", description = "") @Valid @RequestParam(value = "correspondent", required = false) Integer correspondent,
-        @Parameter(name = "document", description = "") @RequestPart(value = "document", required = false) List<MultipartFile> document
-    )
-
-    {
+            @Parameter(name = "title", description = "") @Valid @RequestParam(value = "title", required = false) String title,
+            @Parameter(name = "created", description = "") @Valid @RequestParam(value = "created", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime created,
+            @Parameter(name = "document_type", description = "") @Valid @RequestParam(value = "document_type", required = false) Integer documentType,
+            @Parameter(name = "tags", description = "") @Valid @RequestPart(value = "tags", required = false) List<Integer> tags,
+            @Parameter(name = "correspondent", description = "") @Valid @RequestParam(value = "correspondent", required = false) Integer correspondent,
+            @Parameter(name = "document", description = "") @RequestPart(value = "document", required = false) List<MultipartFile> document
+    ) {
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
 
+    /**
+     * GET /api/custom/getdocuments/
+     **/
+    @Operation(
+            operationId = "customGetDocuments",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json")
+                    })
+            }
+    )
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/api/custom/getdocuments/",
+            produces = {"application/json"}
+    )
+    default ResponseEntity<ObjectNode> customGetDocuments(
+
+    ) {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

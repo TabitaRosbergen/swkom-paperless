@@ -6,8 +6,8 @@ import org.openapitools.persistence.entities.DocumentsTagEntity;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-11-10T12:49:40+0100",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.1 (Oracle Corporation)"
+    date = "2024-01-04T10:45:53+0100",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (SAP SE)"
 )
 public class TagMapperImpl implements TagMapper {
 
