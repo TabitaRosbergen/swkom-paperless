@@ -1,4 +1,4 @@
-package org.openapitools.services.requestservices;
+package org.openapitools.services.impl;
 
 import org.openapitools.configuration.RabbitMQConfig;
 
@@ -29,15 +29,22 @@ public class MessageService {
     @RabbitListener(queues = RabbitMQConfig.MESSAGE_IN_QUEUE)
     public void receive(String path) throws IOException {
         log.info("MessageService received: '" + path + "'");
-        System.out.println("MessageService received: '" + path + "'");
+        System.out.println("MessageService received: '" + path + "'*******************************************************************************************************");
 
         //retrieve the document from minio
         File file = minioService.getDocument(path);
 
         //Print the document
-        log.info("This is the file: " + file.getName());
+        log.info("This is the file: " + file.getName() + "******************************************************************************************************************");
 
         String result = ocrService.getFileContent(file);
         log.info("This is the result of the ocr service: " + result);
+
+        sendMessage(result);
+    }
+
+    public void sendMessage(String message) {
+        log.info("MessageService sending:***********************************************************************************************************************************");
+        rabbit.convertAndSend(RabbitMQConfig.MESSAGE_OUT_QUEUE, message);
     }
 }

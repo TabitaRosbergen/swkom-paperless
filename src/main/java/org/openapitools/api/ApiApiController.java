@@ -1,14 +1,12 @@
 package org.openapitools.api;
 
-import io.minio.*;
-import io.minio.messages.Item;
-import org.openapitools.configuration.RabbitMQConfig;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.swagger.v3.core.util.Json;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.Document;
 import org.openapitools.services.impl.DocumentServiceImpl;
 
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -62,8 +60,19 @@ public class ApiApiController implements ApiApi {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
-
     }
 
+    @Override
+    public ResponseEntity<ObjectNode> customGetDocuments() {
+        ObjectNode json = Json.mapper().createObjectNode();
 
+        List<Document> documents = documentServiceImpl.getDocuments();
+
+        //put every document in the json
+        for (Document document : documents) {
+            json.putPOJO(document.getId().toString(), document);
+        }
+
+        return ResponseEntity.ok(json);
+    }
 }

@@ -1,25 +1,243 @@
-<!doctype html>
-<html lang="en-US" dir="ltr">
+<!-- original frontend -->
+
+<!--<!doctype html>-->
+<!--<html lang="en-US" dir="ltr">-->
+
+<!--<head>-->
+<!--  <meta charset="utf-8">-->
+<!--  <title>Paperless-ngx</title>-->
+<!--  <base href="/">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+<!--  <meta name="color-scheme" content="dark light">-->
+<!--  <meta name="theme-color" content="#17541f" />-->
+<!--  <link rel="manifest" href="manifest.webmanifest">-->
+<!--  <link rel="icon" type="image/x-icon" href="favicon.ico">-->
+<!--  <link rel="apple-touch-icon" href="apple-touch-icon.png">-->
+<!--  <link rel="stylesheet" href="styles.css">-->
+<!--</head>-->
+
+<!--<body class="color-scheme-system">-->
+<!--  <app-root></app-root>-->
+<!--  <script src="runtime.js" type="module"></script>-->
+<!--  <script src="polyfills.js" type="module"></script>-->
+<!--  <script src="vendor.js" type="module"></script>-->
+<!--  <script src="main.js" type="module"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!-- new frontend -->
+
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Paperless-ngx</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="color-scheme" content="dark light">
-  <meta name="theme-color" content="#17541f" />
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Manager</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+            transition: background-color 0.5s;
+        }
+
+        header {
+            background-color: #17541f;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            transition: background-color 0.3s;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        section {
+            margin: 4rem 0 1rem;
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            transition: box-shadow 0.3s;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            background-color: #17541f;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        button:hover {
+            background-color: #113c17;
+        }
+
+        input {
+            padding: 0.5rem;
+            margin-right: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:hover,
+        input:focus {
+            border-color: #17541f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #17541f;
+            color: #fff;
+        }
+    </style>
 </head>
 
-<body class="color-scheme-system">
-  <app-root></app-root>
-  <script src="runtime.js" type="module"></script>
-  <script src="polyfills.js" type="module"></script>
-  <script src="vendor.js" type="module"></script>
-  <script src="main.js" type="module"></script>
+<body>
+    <header>
+        <h1>Document Manager</h1>
+    </header>
+
+    <section>
+        <h3>Upload Document</h3>
+        <form>
+            <input type="file" id="fileInput" >
+            <button onclick="uploadDocument()">Upload Document </button>
+        </form>
+
+        <br>
+        <br>
+
+        <h3>Search for a specific text in your document</h3>
+        <form>
+        <input type="search" id="searchInput" placeholder="Enter search term"/>
+        <button onclick="searchDocuments()">Search Documents</button>
+        </form>
+
+        <br>
+        <br>
+
+        <h3>Documents</h3>
+        <table id="documentTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Created Date</th>
+                </tr>
+            </thead>
+            <tbody id="documentTableBody"></tbody>
+        </table>
+    </section>
+
+    <script>
+        function searchDocuments() {
+
+        }
+
+        async function uploadDocument() {
+            // Get the file input element
+            const fileInput = document.getElementById('fileInput');
+
+            // Make sure a file was selected
+            if (fileInput.files.length === 0) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            // Get the selected files from the input element
+            const file = fileInput.files[0];
+
+            // Create the request body with FormData to handle the multipart/form-data body
+            const formData = new FormData();
+            formData.append('document', file, file.name);
+
+            try {
+                const response = await fetch('http://localhost:8088/api/documents/post_document/', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const responseData = await response.json();
+                console.log('Response from backend:', responseData);
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+
+            // Clear the file input
+            fileInput.value = '';
+
+            //reload the webpage
+            location.reload();
+        }
+
+        function getDocuments() {
+            fetch('http://localhost:8088/api/custom/getdocuments/')
+                .then(response => response.json())
+                .then(data => displayDocuments(data))
+                .catch(error => console.error('Error fetching documents:', error));
+        }
+
+        function displayDocuments(data) {
+            const documentTableBody = document.getElementById('documentTableBody');
+            documentTableBody.innerHTML = ''; // Clear previous results
+
+            for (const documentId in data) {
+                const document = data[documentId];
+                const row = documentTableBody.insertRow();
+                row.insertCell().textContent = document.id;
+                row.insertCell().textContent = document.title;
+                row.insertCell().textContent = new Date(document.created_date).toLocaleDateString();
+            }
+        }
+
+        function clearFileInput() {
+            document.getElementById('fileInput').value = '';
+        }
+
+        function clearSearchInput() {
+            document.getElementById('searchInput').value = '';
+        }
+
+        // Call getDocuments when the page loads
+        getDocuments();
+    </script>
 </body>
 
 </html>
+
+
