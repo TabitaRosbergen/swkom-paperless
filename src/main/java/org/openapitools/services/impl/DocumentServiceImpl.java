@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.amqp.core.Message;
@@ -22,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-//import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -32,18 +34,18 @@ public class DocumentServiceImpl implements DocumentService {
     private final RabbitTemplate rabbitTemplate;
     private final MinioService minioService;
     private final Logger logger = LoggerFactory.getLogger(MessageService.class);
-//    private final ESDocumentRepository esDocumentRepository;
-//
-//    private final ElasticsearchOperations elasticsearchOperations;
+    private final ESDocumentRepository esDocumentRepository;
+
+    private final ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
-    public DocumentServiceImpl(DocumentsDocumentRepository documentRepository, DocumentMapper documentMapper, RabbitTemplate rabbitTemplate, MinioService minioService /*,  ESDocumentRepository esDocumentRepository, ElasticsearchOperations elasticsearchOperations */) {
+    public DocumentServiceImpl(DocumentsDocumentRepository documentRepository, DocumentMapper documentMapper, RabbitTemplate rabbitTemplate, MinioService minioService, ESDocumentRepository esDocumentRepository, ElasticsearchOperations elasticsearchOperations) {
         this.documentsDocumentRepository = documentRepository;
         this.documentMapper = documentMapper;
         this.rabbitTemplate = rabbitTemplate;
         this.minioService = minioService;
-//        this.esDocumentRepository = esDocumentRepository;
-//        this.elasticsearchOperations = elasticsearchOperations;
+        this.esDocumentRepository = esDocumentRepository;
+        this.elasticsearchOperations = elasticsearchOperations;
     }
 
     private void uploadDocumentToMinio(MultipartFile multipartFile, String path) {
@@ -113,47 +115,31 @@ public class DocumentServiceImpl implements DocumentService {
         // save the document to the postgres database
         documentsDocumentRepository.save(documentToBeSaved);
 
-        //TODO: implement elasticsearch or remove the code below
 
-        //beide creates werfen die selbe exception: org.springframework.data.elasticsearch.NoSuchIndexException: Index null not found.;
-        // nested exception is ElasticsearchException[java.util.concurrent.ExecutionException: java.net.ConnectException: Connection refused];
-        // nested: ExecutionException[java.net.ConnectException: Connection refused];
-        // nested: ConnectException[Connection refused];
-        //elasticsearchOperations.indexOps(IndexCoordinates.of("files")).create();
-//        elasticsearchOperations.indexOps(DocumentDTO.class).create();
+        logger.info("id = " + documentToBeSaved.getId());
+        DocumentDTO documentDTO = new DocumentDTO();
+        documentDTO.setId(String.valueOf(documentToBeSaved.getId()));
+        documentDTO.setContent(documentToBeSaved.getContent());
+        documentDTO.setTitle(documentToBeSaved.getTitle());
+        documentDTO.setCreated(documentToBeSaved.getCreated());
 
-//        DocumentDTO DocumentDTO = new DocumentDTO();
-//        DocumentDTO.setId(documentToBeSaved.getId().toString());
-//        DocumentDTO.setContent(documentToBeSaved.getContent());
-//
-//        ESDocumentRepository.save(DocumentDTO);
-//
-//        //find all documents in the ESDocumentRepository that match the search query
-//        Page<DocumentDTO> documentDTOs = ESDocumentRepository.findByContentContains(documentToBeSaved.getContent(), PageRequest.of(0, 10));
-//
-//        //print the number of documents that match the search query
-//        logger.info("Number of documents that match the search query: " + documentDTOs.getTotalElements());
-//
+        esDocumentRepository.save(documentDTO);
 
+        logger.info("Document saved to the database, before query");
 
-//        logger.info("id = " + documentToBeSaved.getId());
-//        DocumentDTO documentDTO = new DocumentDTO();
-//        documentDTO.setId(String.valueOf(documentToBeSaved.getId()));
-//        documentDTO.setContent(documentToBeSaved.getContent());
+        try {
+            Page<DocumentDTO> documentDTOs1 = esDocumentRepository.findByContentContainsCustom("MapStruct", PageRequest.of(0, 10));
+           logger.info("Number of documents that match the search query: " + documentDTOs1.getTotalElements());
+            List<DocumentDTO> documentDTOs = Lists.newArrayList(esDocumentRepository.findAll());
+            logger.info("Number of documents that match the search query: " + documentDTOs.size());
+           documentDTOs.forEach(d -> logger.info(d.toString()));
 
-//        esDocumentRepository.save(documentDTO);
-
-        //
-//        try {
-////            Page<DocumentDTO> documentDTOs = esService.findByContentContainsCustom(documentToBeSaved.getContent(), PageRequest.of(0, 10));
-//            List<DocumentDTO> documentDTOs = Lists.newArrayList(esDocumentRepository.findAll());
-//            logger.info("Number of documents that match the search query: " + documentDTOs.size());
-//            documentDTOs.forEach(d -> logger.info(d.toString()));
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    //TODO copy try catch to function to search by content
 
     @Override
     public List<Document> getDocuments() {
