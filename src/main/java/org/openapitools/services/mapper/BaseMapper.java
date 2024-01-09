@@ -1,8 +1,5 @@
 package org.openapitools.services.mapper;
 
-import java.util.List;
-
-import org.mapstruct.Mapper;
 import org.openapitools.jackson.nullable.JsonNullable;
 
 public interface BaseMapper<ENTITY, DTO> {
