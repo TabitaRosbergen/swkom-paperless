@@ -9,4 +9,6 @@ public interface DocumentService {
     void uploadDocument(Document document, MultipartFile multipartFile);
 
     List<Document> getDocuments();
+
+    List<Document> getDocumentsByContentString(String contentString);
 }

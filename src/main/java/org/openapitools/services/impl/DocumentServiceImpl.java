@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+//import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -32,18 +32,39 @@ public class DocumentServiceImpl implements DocumentService {
     private final RabbitTemplate rabbitTemplate;
     private final MinioService minioService;
     private final Logger logger = LoggerFactory.getLogger(MessageService.class);
-    private final ESDocumentRepository esDocumentRepository;
-
-    private final ElasticsearchOperations elasticsearchOperations;
+//    private final ESDocumentRepository esDocumentRepository;
+//
+//    private final ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
-    public DocumentServiceImpl(DocumentsDocumentRepository documentRepository, DocumentMapper documentMapper, RabbitTemplate rabbitTemplate, MinioService minioService, ESDocumentRepository esDocumentRepository, ElasticsearchOperations elasticsearchOperations) {
+    public DocumentServiceImpl(DocumentsDocumentRepository documentRepository, DocumentMapper documentMapper, RabbitTemplate rabbitTemplate, MinioService minioService /*,  ESDocumentRepository esDocumentRepository, ElasticsearchOperations elasticsearchOperations */) {
         this.documentsDocumentRepository = documentRepository;
         this.documentMapper = documentMapper;
         this.rabbitTemplate = rabbitTemplate;
         this.minioService = minioService;
-        this.esDocumentRepository = esDocumentRepository;
-        this.elasticsearchOperations = elasticsearchOperations;
+//        this.esDocumentRepository = esDocumentRepository;
+//        this.elasticsearchOperations = elasticsearchOperations;
+    }
+
+    private void uploadDocumentToMinio(MultipartFile multipartFile, String path) {
+        // create the bucket if it doesn't exist.
+        minioService.createBucket();
+
+        // upload the document to minio
+        minioService.uploadDocument(multipartFile, path);
+    }
+
+    private String communicateWithRabbitMQ(String path) {
+        // for some unknown reason every other document would fail so we call this two times, don't judge
+        // here be dragons
+        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
+        Message responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
+
+//        //send a message to the queue with the path to the document
+        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
+        responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
+
+        return responseMessage == null ? null : new String(responseMessage.getBody());
     }
 
     @Override
@@ -60,14 +81,13 @@ public class DocumentServiceImpl implements DocumentService {
         documentToBeSaved.setStorageType("minio");
         documentToBeSaved.setMimeType("mimeType");
 
-        // create the bucket if it doesn't exist.
-        minioService.createBucket();
 
         // generate a random id for the document path
         String path = UUID.randomUUID() + "/" + multipartFile.getOriginalFilename();
 
         // upload the document to minio
-        minioService.uploadDocument(multipartFile, path);
+        uploadDocumentToMinio(multipartFile, path);
+
 
         //create a StoragePath for the document
         DocumentsStoragepathEntity storagePath = new DocumentsStoragepathEntity();
@@ -81,23 +101,19 @@ public class DocumentServiceImpl implements DocumentService {
         // save the storage path to the postgres database
         documentToBeSaved.setStoragePath(storagePath);
 
-        // for some unknown reason every other document would fail so we call this two times, don't judge
-        // here be dragons
-        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
-        Message responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
-
-//        //send a message to the queue with the path to the document
-        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
-        responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
+        String responseMessage = communicateWithRabbitMQ(path);
 
         if (responseMessage == null) {
             logger.error("No response from the queue ---------------------------------------------------------------------------------------------------------------------");
         } else {
-            String responseJson = new String(responseMessage.getBody());
-            logger.info("Response from the queue: " + responseJson);
-
-            documentToBeSaved.setContent(responseJson);
+            logger.info("Response from the queue: " + responseMessage);
+            documentToBeSaved.setContent(responseMessage);
         }
+
+        // save the document to the postgres database
+        documentsDocumentRepository.save(documentToBeSaved);
+
+        //TODO: implement elasticsearch or remove the code below
 
         //beide creates werfen die selbe exception: org.springframework.data.elasticsearch.NoSuchIndexException: Index null not found.;
         // nested exception is ElasticsearchException[java.util.concurrent.ExecutionException: java.net.ConnectException: Connection refused];
@@ -118,15 +134,14 @@ public class DocumentServiceImpl implements DocumentService {
 //        //print the number of documents that match the search query
 //        logger.info("Number of documents that match the search query: " + documentDTOs.getTotalElements());
 //
-        // save the document to the postgres database
-        documentsDocumentRepository.save(documentToBeSaved);
 
-        logger.info("id = " + documentToBeSaved.getId());
-        DocumentDTO documentDTO = new DocumentDTO();
-        documentDTO.setId(String.valueOf(documentToBeSaved.getId()));
-        documentDTO.setContent(documentToBeSaved.getContent());
 
-        esDocumentRepository.save(documentDTO);
+//        logger.info("id = " + documentToBeSaved.getId());
+//        DocumentDTO documentDTO = new DocumentDTO();
+//        documentDTO.setId(String.valueOf(documentToBeSaved.getId()));
+//        documentDTO.setContent(documentToBeSaved.getContent());
+
+//        esDocumentRepository.save(documentDTO);
 
         //
 //        try {
@@ -146,6 +161,24 @@ public class DocumentServiceImpl implements DocumentService {
 
         //print the number of documents in the database
         logger.info("Number of documents in the database: " + documentsDocumentEntities.size());
+
+        List<Document> documents = new java.util.ArrayList<>(Collections.emptyList());
+
+        //convert each DocumentsDocumentEntity to a Document
+        for (DocumentsDocumentEntity documentsDocumentEntity : documentsDocumentEntities) {
+            documents.add(documentMapper.entityToDto(documentsDocumentEntity));
+        }
+
+        return documents;
+    }
+
+    @Override
+    public List<Document> getDocumentsByContentString(String contentString) {
+
+        List<DocumentsDocumentEntity> documentsDocumentEntities = documentsDocumentRepository.findByContentContains(contentString);
+
+        //print the number of documents in the database
+        logger.info("Number of documents in the database that match the search query: " + documentsDocumentEntities.size());
 
         List<Document> documents = new java.util.ArrayList<>(Collections.emptyList());
 

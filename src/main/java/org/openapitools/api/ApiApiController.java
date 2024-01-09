@@ -75,4 +75,18 @@ public class ApiApiController implements ApiApi {
 
         return ResponseEntity.ok(json);
     }
+
+    @Override
+    public ResponseEntity<ObjectNode> customGetDocumentsByContentString(String contentString) {
+        ObjectNode json = Json.mapper().createObjectNode();
+
+        List<Document> documents = documentServiceImpl.getDocumentsByContentString(contentString);
+
+        //put every document in the json
+        for (Document document : documents) {
+            json.putPOJO(document.getId().toString(), document);
+        }
+
+        return ResponseEntity.ok(json);
+    }
 }
