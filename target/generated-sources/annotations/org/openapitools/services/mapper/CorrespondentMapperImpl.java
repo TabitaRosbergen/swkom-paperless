@@ -6,7 +6,7 @@ import org.openapitools.persistence.entities.DocumentsCorrespondentEntity;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-01-04T10:45:53+0100",
+    date = "2024-01-09T12:04:50+0100",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21 (SAP SE)"
 )
 public class CorrespondentMapperImpl implements CorrespondentMapper {

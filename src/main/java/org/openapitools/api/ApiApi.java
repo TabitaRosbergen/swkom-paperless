@@ -1759,4 +1759,27 @@ public interface ApiApi {
     ) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    /**
+     * GET /api/custom/getdocumentsByContentString/
+     **/
+    @Operation(
+            operationId = "customGetDocumentsByContentString",
+            tags = {"Documents"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success", content = {
+                            @Content(mediaType = "application/json")
+                    })
+            }
+    )
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/api/custom/getdocumentsByContentString/",
+            produces = {"application/json"}
+    )
+    default ResponseEntity<ObjectNode> customGetDocumentsByContentString(
+            @Parameter(name = "contentString", description = "") @Valid @RequestParam(value = "contentString", required = true) String contentString
+    ) {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

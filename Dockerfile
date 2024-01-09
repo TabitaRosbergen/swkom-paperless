@@ -15,7 +15,7 @@ RUN apk --no-cache add maven
 # copy sourcecode
 COPY . /app
 # Build the application --> skit tests for now
-RUN mvn clean package -DskipTests
+RUN mvn clean package #-DskipTests
 
 EXPOSE 8088
 ENTRYPOINT ["java","-jar","target/openapi-spring-1.0.jar"]

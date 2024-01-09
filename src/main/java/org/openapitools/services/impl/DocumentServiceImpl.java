@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.amqp.core.Message;
@@ -46,6 +48,27 @@ public class DocumentServiceImpl implements DocumentService {
         this.elasticsearchOperations = elasticsearchOperations;
     }
 
+    private void uploadDocumentToMinio(MultipartFile multipartFile, String path) {
+        // create the bucket if it doesn't exist.
+        minioService.createBucket();
+
+        // upload the document to minio
+        minioService.uploadDocument(multipartFile, path);
+    }
+
+    private String communicateWithRabbitMQ(String path) {
+        // for some unknown reason every other document would fail so we call this two times, don't judge
+        // here be dragons
+        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
+        Message responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
+
+//        //send a message to the queue with the path to the document
+        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
+        responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
+
+        return responseMessage == null ? null : new String(responseMessage.getBody());
+    }
+
     @Override
     public void uploadDocument(Document document, MultipartFile multipartFile) {
         document.setCreated(OffsetDateTime.now());
@@ -60,14 +83,13 @@ public class DocumentServiceImpl implements DocumentService {
         documentToBeSaved.setStorageType("minio");
         documentToBeSaved.setMimeType("mimeType");
 
-        // create the bucket if it doesn't exist.
-        minioService.createBucket();
 
         // generate a random id for the document path
         String path = UUID.randomUUID() + "/" + multipartFile.getOriginalFilename();
 
         // upload the document to minio
-        minioService.uploadDocument(multipartFile, path);
+        uploadDocumentToMinio(multipartFile, path);
+
 
         //create a StoragePath for the document
         DocumentsStoragepathEntity storagePath = new DocumentsStoragepathEntity();
@@ -81,63 +103,29 @@ public class DocumentServiceImpl implements DocumentService {
         // save the storage path to the postgres database
         documentToBeSaved.setStoragePath(storagePath);
 
-        // for some unknown reason every other document would fail so we call this two times, don't judge
-        // here be dragons
-        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
-        Message responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
-
-//        //send a message to the queue with the path to the document
-        rabbitTemplate.convertAndSend(RabbitMQConfig.MESSAGE_IN_QUEUE, path);
-        responseMessage = rabbitTemplate.receive(RabbitMQConfig.MESSAGE_OUT_QUEUE, 6000); // Adjust timeout as needed
+        String responseMessage = communicateWithRabbitMQ(path);
 
         if (responseMessage == null) {
             logger.error("No response from the queue ---------------------------------------------------------------------------------------------------------------------");
         } else {
-            String responseJson = new String(responseMessage.getBody());
-            logger.info("Response from the queue: " + responseJson);
-
-            documentToBeSaved.setContent(responseJson);
+            logger.info("Response from the queue: " + responseMessage);
+            documentToBeSaved.setContent(responseMessage);
         }
 
-        //beide creates werfen die selbe exception: org.springframework.data.elasticsearch.NoSuchIndexException: Index null not found.;
-        // nested exception is ElasticsearchException[java.util.concurrent.ExecutionException: java.net.ConnectException: Connection refused];
-        // nested: ExecutionException[java.net.ConnectException: Connection refused];
-        // nested: ConnectException[Connection refused];
-        //elasticsearchOperations.indexOps(IndexCoordinates.of("files")).create();
-//        elasticsearchOperations.indexOps(DocumentDTO.class).create();
-
-//        DocumentDTO DocumentDTO = new DocumentDTO();
-//        DocumentDTO.setId(documentToBeSaved.getId().toString());
-//        DocumentDTO.setContent(documentToBeSaved.getContent());
-//
-//        ESDocumentRepository.save(DocumentDTO);
-//
-//        //find all documents in the ESDocumentRepository that match the search query
-//        Page<DocumentDTO> documentDTOs = ESDocumentRepository.findByContentContains(documentToBeSaved.getContent(), PageRequest.of(0, 10));
-//
-//        //print the number of documents that match the search query
-//        logger.info("Number of documents that match the search query: " + documentDTOs.getTotalElements());
-//
         // save the document to the postgres database
         documentsDocumentRepository.save(documentToBeSaved);
+
 
         logger.info("id = " + documentToBeSaved.getId());
         DocumentDTO documentDTO = new DocumentDTO();
         documentDTO.setId(String.valueOf(documentToBeSaved.getId()));
         documentDTO.setContent(documentToBeSaved.getContent());
+        documentDTO.setTitle(documentToBeSaved.getTitle());
+        documentDTO.setCreated(documentToBeSaved.getCreated());
 
         esDocumentRepository.save(documentDTO);
 
-        //
-//        try {
-////            Page<DocumentDTO> documentDTOs = esService.findByContentContainsCustom(documentToBeSaved.getContent(), PageRequest.of(0, 10));
-//            List<DocumentDTO> documentDTOs = Lists.newArrayList(esDocumentRepository.findAll());
-//            logger.info("Number of documents that match the search query: " + documentDTOs.size());
-//            documentDTOs.forEach(d -> logger.info(d.toString()));
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        logger.info("Document saved to the database, before query");
     }
 
     @Override
@@ -155,5 +143,13 @@ public class DocumentServiceImpl implements DocumentService {
         }
 
         return documents;
+    }
+
+    @Override
+    public Page<DocumentDTO> getDocumentsByContentString(String contentString) {
+        Page<DocumentDTO> documentDTOs = esDocumentRepository.findByContentContainsCustom(contentString, PageRequest.of(0, 10));
+        logger.info("Number of documents in the database that contain the string: " + contentString + " : " + documentDTOs.getTotalElements());
+
+        return documentDTOs;
     }
 }
