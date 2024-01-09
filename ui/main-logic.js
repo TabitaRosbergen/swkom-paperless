@@ -1,22 +1,30 @@
-// document.addEventListener('DOMContentLoaded', function () {
-//     // Call getDocuments() once the DOM is fully loaded
-//     getDocuments();
-// });
+//documents are loaded from the database and displayed in a table once the page is loaded
+document.addEventListener('DOMContentLoaded', function () {
+    // Call getDocuments() once the DOM is fully loaded
+    getDocuments();
+});
 
 function searchDocuments() {
-      // Get the search input element
+    // Get the search input element
     const searchInput = document.getElementById('searchInput');
 
     // Get the value from the search input
     const searchTerm = searchInput.value.trim();
 
     try {
-        var url = 'http://localhost:8088/api/custom/getdocumentsByContentString/?contentString='+searchTerm;
+        var url = 'http://localhost:8088/api/custom/getdocumentsByContentString/?contentString=' + searchTerm;
 
-            fetch(url)
-                .then(response => response.json())
-                .then(data => displayDocuments(data))
-                .catch(error => console.error('Error fetching documents:', error));
+        var headers = new Headers();
+
+        headers.append('Connection', 'keep-alive');
+
+        fetch(url, {
+            method: 'GET',
+            headers: headers
+        })
+            .then(response => response.json())
+            .then(data => displayDocuments(data))
+            .catch(error => console.error('Error fetching documents:', error));
 
     } catch (error) {
         console.error('Error:', error);
@@ -42,12 +50,12 @@ function uploadDocument() {
     formData.append('document', file, file.name);
 
     fetch('http://localhost:8088/api/documents/post_document/', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(getDocuments)
-                .catch(error => console.error('Error fetching documents:', error));
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(getDocuments)
+        .catch(error => console.error('Error fetching documents:', error));
 
     // Clear the file input
     fileInput.value = '';
@@ -57,9 +65,9 @@ function uploadDocument() {
 
 function getDocuments() {
     fetch('http://localhost:8088/api/custom/getdocuments/')
-                .then(response => response.json())
-                .then(data => displayDocuments(data))
-                .catch(error => console.error('Error fetching documents:', error));
+        .then(response => response.json())
+        .then(data => displayDocuments(data))
+        .catch(error => console.error('Error fetching documents:', error));
 }
 
 function displayDocuments(data) {
@@ -75,5 +83,4 @@ function displayDocuments(data) {
     }
 }
 
-getDocuments();
 
