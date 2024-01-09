@@ -81,51 +81,6 @@ public class OCRService {
         }
     }
 
-//    public String getFileContent(File file) {
-//        File imageFile = new File("src/main/resources/tessdata/Hello-Text-PNG.png");
-//        ITesseract instance = new Tesseract();
-//        instance.setDatapath("src/main/resources/tessdata"); // replace with your tessdata path
-//        String result = null;
-//        try {
-//            result = instance.doOCR(imageFile);
-//        } catch (TesseractException e) {
-//            System.err.println(e.getMessage());
-//        }
-//        return result;
-//    }
-
-    //    private void readPdf(File file) throws IOException {
-//        byte[] fileContent = Files.readAllBytes(file.toPath());
-//
-//        // Load file into PDFBox class
-//        PDDocument document = null;
-//        try {
-//            document = Loader.loadPDF(fileContent);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        PDFTextStripper stripper = new PDFTextStripper();
-//        String strippedText = null;
-//        try {
-//            strippedText = stripper.getText(document);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        // Check text exists into the file
-//		if (strippedText.trim().isEmpty()){
-//            try {
-//                strippedText = extractTextFromScannedDocument(document);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            } catch (TesseractException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//        System.out.println(strippedText);
-//        log.info(strippedText);
-//    }
-
     public String extractTextFromScannedDocument(PDDocument document) throws IOException, TesseractException {
 
 		// Extract images from file
@@ -168,5 +123,4 @@ public class OCRService {
         byte[] fileContent = Files.readAllBytes(file.toPath());
         return Loader.loadPDF(fileContent);
     }
-
 }

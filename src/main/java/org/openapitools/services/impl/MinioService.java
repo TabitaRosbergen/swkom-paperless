@@ -47,20 +47,11 @@ public class MinioService {
                             .stream(file.getInputStream(), file.getSize(), -1)
                             .build());
 
-            //get all documents from minio storage and print them
-            Iterable<Result<Item>> results = minioClient.listObjects(
-                    ListObjectsArgs.builder()
-                            .bucket(this.bucketName)
-                            .build());
-
-            for (Result<Item> result : results) {
-                Item item = result.get();
-                // System.out.println("Retrieved item: " + item.lastModified() + ", " + item.size() + ", " + item.objectName());
-            }
-
         } catch (Exception e) {
             logger.error("Error occurred: " + e);
         }
+
+        logger.info("Successfully uploaded document to minio storage");
     }
 
     //get the document from minio storage
@@ -88,6 +79,9 @@ public class MinioService {
             System.out.println("Error occurred: " + e);
             logger.error("MinioService could not convert stream to temporary file: " + e);
         }
+
+        logger.info("Successfully retrieved document from minio storage");
+
         return tempFile;
     }
 }

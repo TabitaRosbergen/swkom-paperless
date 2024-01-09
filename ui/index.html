@@ -97,41 +97,44 @@
 <script type="text/javascript" src="main-logic.js"></script>
 
 <body>
-    <header>
-        <h1>Document Manager</h1>
-    </header>
+<header>
+    <h1>Document Manager</h1>
+</header>
 
-    <section>
-        <h3>Upload Document</h3>
-        <form>
-            <input type="file" id="fileInput" title="fileUpload" placeholder="">
-            <button onclick="uploadDocument()">Upload Document </button>
-        </form>
+<section>
+    <h3>Upload Document</h3>
+    <form>
+        <input type="file" id="fileInput" title="fileUpload" placeholder="">
+        <button onclick="uploadDocument()">Upload Document</button>
+    </form>
 
-        <br>
-        <br>
+    <br>
+    <br>
 
-        <h3>Search for a specific text in your document</h3>
-        <form>
+    <h3>Search for a specific text in your document</h3>
+    <form>
         <input type="search" id="searchInput" placeholder="Enter search term"/>
         <button type="submit" onclick="searchDocuments()">Search Documents</button>
-        </form>
+    </form>
 
-        <br>
-        <br>
+    <br>
+    <br>
 
-        <h3>Documents</h3>
-        <table id="documentTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Created Date</th>
-                </tr>
-            </thead>
-            <tbody id="documentTableBody"></tbody>
-        </table>
-    </section>
+    <h3>Documents</h3>
+    <table id="documentTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Created Date</th>
+        </tr>
+        </thead>
+        <tbody id="documentTableBody"></tbody>
+    </table>
+
+    <h5>Please reload the page manually to see the results</h5>
+
+</section>
 </body>
 
 </html>
