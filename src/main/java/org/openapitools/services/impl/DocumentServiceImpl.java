@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.amqp.core.Message;
@@ -104,7 +106,7 @@ public class DocumentServiceImpl implements DocumentService {
         // nested: ExecutionException[java.net.ConnectException: Connection refused];
         // nested: ConnectException[Connection refused];
         //elasticsearchOperations.indexOps(IndexCoordinates.of("files")).create();
-//        elasticsearchOperations.indexOps(DocumentDTO.class).create();
+        //elasticsearchOperations.indexOps(DocumentDTO.class).create();
 
 //        DocumentDTO DocumentDTO = new DocumentDTO();
 //        DocumentDTO.setId(documentToBeSaved.getId().toString());
@@ -128,17 +130,22 @@ public class DocumentServiceImpl implements DocumentService {
 
         esDocumentRepository.save(documentDTO);
 
-        //
-//        try {
-////            Page<DocumentDTO> documentDTOs = esService.findByContentContainsCustom(documentToBeSaved.getContent(), PageRequest.of(0, 10));
-//            List<DocumentDTO> documentDTOs = Lists.newArrayList(esDocumentRepository.findAll());
-//            logger.info("Number of documents that match the search query: " + documentDTOs.size());
-//            documentDTOs.forEach(d -> logger.info(d.toString()));
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        logger.info("Document saved to the database, before query");
+
+
+      //  try {
+      //      Page<DocumentDTO> documentDTOs1 = esDocumentRepository.findByContentContainsCustom(documentToBeSaved.getContent(), PageRequest.of(0, 10));
+      //     logger.info("Number of documents that match the search query: " + documentDTOs1.getTotalElements());
+      //      List<DocumentDTO> documentDTOs = Lists.newArrayList(esDocumentRepository.findAll());
+      //      logger.info("Number of documents that match the search query: " + documentDTOs.size());
+      //     documentDTOs.forEach(d -> logger.info(d.toString()));
+
+      //  } catch (Exception e) {
+      //      e.printStackTrace();
+      //  }
     }
+
+    //TODO function to search by content
 
     @Override
     public List<Document> getDocuments() {
