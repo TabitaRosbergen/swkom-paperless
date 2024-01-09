@@ -126,7 +126,7 @@ public class OCRService {
 //        log.info(strippedText);
 //    }
 
-    private String extractTextFromScannedDocument(PDDocument document) throws IOException, TesseractException {
+    public String extractTextFromScannedDocument(PDDocument document) throws IOException, TesseractException {
 
 		// Extract images from file
 		PDFRenderer pdfRenderer = new PDFRenderer(document);
@@ -146,7 +146,7 @@ public class OCRService {
     	    File temp = File.createTempFile("tempfile_" + page, ".png");
     	    ImageIO.write(bim, "png", temp);
 
-    	    // TODO: Apply here OCR logic
+    	    // OCR logic
 
             String result = null;
             try {
@@ -163,4 +163,10 @@ public class OCRService {
 
 		return out.toString();
 	}
+
+    public static PDDocument loadPDF(File file) throws IOException {
+        byte[] fileContent = Files.readAllBytes(file.toPath());
+        return Loader.loadPDF(fileContent);
+    }
+
 }
