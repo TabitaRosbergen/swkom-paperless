@@ -3,42 +3,25 @@
 //     getDocuments();
 // });
 
-async function searchDocuments() {
-    // Get the search input element
+function searchDocuments() {
+      // Get the search input element
     const searchInput = document.getElementById('searchInput');
 
     // Get the value from the search input
     const searchTerm = searchInput.value.trim();
 
-    alert('Searching for documents containing "' + searchTerm + '"...');
-
     try {
-        var response = await fetch('http://localhost:8088/api/custom/getdocumentsByContentString/?contentString=' + searchTerm , {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json'
-            },
-            mode: 'no-cors'
-        });
+        var url = 'http://localhost:8088/api/custom/getdocumentsByContentString/?contentString='+searchTerm;
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+            fetch(url)
+                .then(response => response.json())
+                .then(data => displayDocuments(data))
+                .catch(error => console.error('Error fetching documents:', error));
 
-        alert('TEST1');
-
-        var responseData = await response.json();
-
-        alert('TEST2: ' + responseData.toString());
-
-        // Display the matching documents
-        displayDocuments(responseData);
     } catch (error) {
         console.error('Error:', error);
         alert('Error searching for documents: ' + error.message);
     }
-
-    alert('TEST3');
 }
 
 function uploadDocument() {
