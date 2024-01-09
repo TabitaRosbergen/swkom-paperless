@@ -6,6 +6,7 @@ services:
       dockerfile: ui/Dockerfile
     ports:
       - "8080:80"
+      - "80:80"
     depends_on:
         backend:
           condition: service_started
@@ -17,6 +18,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8088:8088"
+      - "8081:8088"
     restart: always
     depends_on:
       minio:
