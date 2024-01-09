@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.core.util.Json;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.openapitools.model.Document;
+import org.openapitools.services.impl.DocumentDTO;
 import org.openapitools.services.impl.DocumentServiceImpl;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -80,10 +82,10 @@ public class ApiApiController implements ApiApi {
     public ResponseEntity<ObjectNode> customGetDocumentsByContentString(String contentString) {
         ObjectNode json = Json.mapper().createObjectNode();
 
-        List<Document> documents = documentServiceImpl.getDocumentsByContentString(contentString);
+        Page<DocumentDTO> documents = documentServiceImpl.getDocumentsByContentString(contentString);
 
         //put every document in the json
-        for (Document document : documents) {
+        for (DocumentDTO document : documents) {
             json.putPOJO(document.getId().toString(), document);
         }
 

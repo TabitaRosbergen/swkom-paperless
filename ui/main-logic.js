@@ -85,7 +85,7 @@ function displayDocuments(data) {
         const row = documentTableBody.insertRow();
         row.insertCell().textContent = document.id;
         row.insertCell().textContent = document.title;
-        row.insertCell().textContent = new Date(document.created_date).toLocaleDateString();
+        row.insertCell().textContent = new Date(document.created).toLocaleDateString();
     }
 }
 

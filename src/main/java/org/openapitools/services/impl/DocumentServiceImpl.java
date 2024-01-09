@@ -126,20 +126,7 @@ public class DocumentServiceImpl implements DocumentService {
         esDocumentRepository.save(documentDTO);
 
         logger.info("Document saved to the database, before query");
-
-        try {
-            Page<DocumentDTO> documentDTOs1 = esDocumentRepository.findByContentContainsCustom("MapStruct", PageRequest.of(0, 10));
-           logger.info("Number of documents that match the search query: " + documentDTOs1.getTotalElements());
-            List<DocumentDTO> documentDTOs = Lists.newArrayList(esDocumentRepository.findAll());
-            logger.info("Number of documents that match the search query: " + documentDTOs.size());
-           documentDTOs.forEach(d -> logger.info(d.toString()));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
-
-    //TODO copy try catch to function to search by content
 
     @Override
     public List<Document> getDocuments() {
@@ -159,20 +146,10 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public List<Document> getDocumentsByContentString(String contentString) {
+    public Page<DocumentDTO> getDocumentsByContentString(String contentString) {
+        Page<DocumentDTO> documentDTOs = esDocumentRepository.findByContentContainsCustom(contentString, PageRequest.of(0, 10));
+        logger.info("Number of documents in the database that contain the string: " + contentString + " : " + documentDTOs.getTotalElements());
 
-        List<DocumentsDocumentEntity> documentsDocumentEntities = documentsDocumentRepository.findByContentContains(contentString);
-
-        //print the number of documents in the database
-        logger.info("Number of documents in the database that match the search query: " + documentsDocumentEntities.size());
-
-        List<Document> documents = new java.util.ArrayList<>(Collections.emptyList());
-
-        //convert each DocumentsDocumentEntity to a Document
-        for (DocumentsDocumentEntity documentsDocumentEntity : documentsDocumentEntities) {
-            documents.add(documentMapper.entityToDto(documentsDocumentEntity));
-        }
-
-        return documents;
+        return documentDTOs;
     }
 }
