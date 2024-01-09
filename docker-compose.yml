@@ -13,6 +13,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8088:8088"
+    restart: always
     depends_on:
       minio:
         condition: service_started
@@ -20,6 +21,8 @@ services:
         condition: service_started
       postgres:
         condition: service_healthy
+      elasticsearch:
+        condition: service_started
 
   postgres:
     image: postgres
