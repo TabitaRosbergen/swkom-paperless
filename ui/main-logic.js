@@ -10,14 +10,15 @@ async function searchDocuments() {
     // Get the value from the search input
     const searchTerm = searchInput.value.trim();
 
-     alert('Searching for documents containing "' + searchTerm + '"...');
+    alert('Searching for documents containing "' + searchTerm + '"...');
 
     try {
         var response = await fetch('http://localhost:8088/api/custom/getdocumentsByContentString/?contentString=' + searchTerm , {
             method: 'GET',
             headers: {
-                Accept: '*/*'
+                Accept: 'application/json'
             },
+            mode: 'no-cors'
         });
 
         if (!response.ok) {
@@ -33,7 +34,7 @@ async function searchDocuments() {
         // Display the matching documents
         displayDocuments(responseData);
     } catch (error) {
-        console.error('Error:', error.message);
+        console.error('Error:', error);
         alert('Error searching for documents: ' + error.message);
     }
 
@@ -67,6 +68,8 @@ function uploadDocument() {
 
     // Clear the file input
     fileInput.value = '';
+
+    getDocuments();
 }
 
 function getDocuments() {
@@ -89,4 +92,5 @@ function displayDocuments(data) {
     }
 }
 
+getDocuments();
 
