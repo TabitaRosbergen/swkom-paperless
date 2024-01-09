@@ -17,16 +17,5 @@ public interface BaseMapper<ENTITY, DTO> {
         return value == null ? null : JsonNullable.of(value);
     }
 
-
-
-    //default String map(JsonNullable<String> value) {
-       // return value!=null && value.isPresent() ? value.get() : null;
-   // }
-
-    //default JsonNullable<String> map(String value) {
-       // return value == null ? null : JsonNullable.of(value);
-    //}
-
-    //default JsonNullable<Integer> map(int value) {return JsonNullable.of(value);}
 }
 
