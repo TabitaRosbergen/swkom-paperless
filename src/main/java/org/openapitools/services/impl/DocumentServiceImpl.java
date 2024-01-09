@@ -127,22 +127,23 @@ public class DocumentServiceImpl implements DocumentService {
         DocumentDTO documentDTO = new DocumentDTO();
         documentDTO.setId(String.valueOf(documentToBeSaved.getId()));
         documentDTO.setContent(documentToBeSaved.getContent());
+        documentDTO.setTitle(documentToBeSaved.getTitle());
+        documentDTO.setCreated(documentToBeSaved.getCreated());
 
         esDocumentRepository.save(documentDTO);
 
         logger.info("Document saved to the database, before query");
 
+        try {
+            Page<DocumentDTO> documentDTOs1 = esDocumentRepository.findByContentContainsCustom("MapStruct", PageRequest.of(0, 10));
+           logger.info("Number of documents that match the search query: " + documentDTOs1.getTotalElements());
+            List<DocumentDTO> documentDTOs = Lists.newArrayList(esDocumentRepository.findAll());
+            logger.info("Number of documents that match the search query: " + documentDTOs.size());
+           documentDTOs.forEach(d -> logger.info(d.toString()));
 
-      //  try {
-      //      Page<DocumentDTO> documentDTOs1 = esDocumentRepository.findByContentContainsCustom(documentToBeSaved.getContent(), PageRequest.of(0, 10));
-      //     logger.info("Number of documents that match the search query: " + documentDTOs1.getTotalElements());
-      //      List<DocumentDTO> documentDTOs = Lists.newArrayList(esDocumentRepository.findAll());
-      //      logger.info("Number of documents that match the search query: " + documentDTOs.size());
-      //     documentDTOs.forEach(d -> logger.info(d.toString()));
-
-      //  } catch (Exception e) {
-      //      e.printStackTrace();
-      //  }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //TODO function to search by content
